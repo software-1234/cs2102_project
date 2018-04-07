@@ -13,8 +13,6 @@ from forms import RegisterForm, LoginForm, ForgotForm
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from flask.ext.login import LoginManager, login_user, logout_user, current_user, login_required
-# Set your classes here.
-
 
 #----------------------------------------------------------------------------#
 # App Config.
@@ -28,6 +26,7 @@ app.config.from_object('config')
 #----------------------------------------------------------------------------#
 db = SQLAlchemy(app)
 
+# Set your classes here.
 class Users(db.Model):
     __tablename__ = 'users'
     user_id = Column('user_id', String, primary_key=True)
@@ -56,6 +55,8 @@ class Users(db.Model):
     def is_anonymous(self):
         return False
 
+    def is_admin(self):
+        return user_id == "admin"
     def get_id(self):
         return unicode(self.user_id)
 
@@ -64,6 +65,12 @@ class Users(db.Model):
 
 db.drop_all()
 db.create_all()
+
+# Register Admin
+# (Anybody who has a better idea about admin? LOL LOL)
+admin = Users("admin", "1", "", "")
+db.session.add(admin)
+db.session.commit()
 
 #----------------------------------------------------------------------------#
 # Login
@@ -117,13 +124,10 @@ def about():
 def login():
     form = LoginForm(request.form)
     if (request.method == "GET"):
-        print ("Hooo")
         return render_template('forms/login.html', form = form)
-
 
     user_id = form.user_id.data
     password = form.password.data
-
     registered_user = Users.query.filter_by(user_id = user_id).first()
     if registered_user is None:
         flash('Username is invalid' , 'error')
@@ -162,8 +166,6 @@ def logout():
     return redirect(url_for('home'))
 
 # Error handlers.
-
-
 @app.errorhandler(500)
 def internal_error(error):
     #db_session.rollback()
@@ -190,7 +192,6 @@ if not app.debug:
 
 # Default port:
 if __name__ == '__main__':
-
     app.run()
 
 # Or specify port manually:

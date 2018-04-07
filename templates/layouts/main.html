@@ -48,7 +48,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="/">Project name</a>
+          <a class="navbar-brand" href="/">Task sourcing</a>
         </div>
         <div class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
@@ -69,6 +69,7 @@
           </ul>
           <ul class="nav navbar-nav pull-right">
             {% if g.user.is_authenticated()%}
+              <li><a href="#">My Page</a></li>
               <li><a href="{{ url_for('logout') }}">Logout</a></li>
             {% endif %}
             {% if not g.user.is_authenticated()%}
