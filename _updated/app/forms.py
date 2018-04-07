@@ -10,7 +10,7 @@ class RegisterForm(Form):
     email = TextField(
         'Email', validators=[DataRequired(), Length(min=6, max=40)]
     )
-    password = PasswordField(
+    password_hash = PasswordField(
         'Password', validators=[DataRequired(), Length(min=6, max=40)]
     )
     confirm = PasswordField(
