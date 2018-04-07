@@ -1,7 +1,6 @@
 #----------------------------------------------------------------------------#
 # Imports
 #----------------------------------------------------------------------------#
-
 from flask import Flask, flash, render_template, request, url_for, redirect, session, g
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import *
@@ -56,7 +55,8 @@ class Users(db.Model):
         return False
 
     def is_admin(self):
-        return user_id == "admin"
+        return self.user_id == "admin"
+
     def get_id(self):
         return unicode(self.user_id)
 
@@ -119,6 +119,9 @@ def home():
 def about():
     return render_template('pages/placeholder.about.html')
 
+@app.route('/mytasks')
+def mytasks():
+    return render_template('pages/placeholder.mytasks.html')
 
 @app.route('/login', methods=["GET","POST"])
 def login():

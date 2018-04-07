@@ -69,7 +69,7 @@
           </ul>
           <ul class="nav navbar-nav pull-right">
             {% if g.user.is_authenticated()%}
-              <li><a href="#">My Page</a></li>
+              <li><a href="{{ url_for('mytasks') }}">My Tasks</a></li>
               <li><a href="{{ url_for('logout') }}">Logout</a></li>
             {% endif %}
             {% if not g.user.is_authenticated()%}
