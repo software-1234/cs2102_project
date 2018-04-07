@@ -2,8 +2,8 @@
 # Imports
 #----------------------------------------------------------------------------#
 
-from flask import Flask, flash, render_template, request, url_for, redirect, session
-from flask.ext.sqlalchemy import SQLAlchemy
+from flask import Flask, flash, render_template, request, url_for, redirect, session, g
+from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import *
 
 import logging
@@ -11,6 +11,8 @@ from logging import Formatter, FileHandler
 from forms import RegisterForm, LoginForm, ForgotForm
 
 from werkzeug.security import generate_password_hash, check_password_hash
+
+from flask.ext.login import LoginManager, login_user, logout_user, current_user, login_required
 # Set your classes here.
 
 
@@ -22,7 +24,7 @@ app.debug = True
 app.config.from_object('config')
 
 #----------------------------------------------------------------------------#
-# Prepare to connect with DB
+# DB
 #----------------------------------------------------------------------------#
 db = SQLAlchemy(app)
 
@@ -60,6 +62,19 @@ class Users(db.Model):
     def __repr__(self):
         return "<User(user id='%s')>" % (self.user_id)
 
+db.drop_all()
+db.create_all()
+
+#----------------------------------------------------------------------------#
+# Login
+#----------------------------------------------------------------------------#
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = 'login'
+
+@login_manager.user_loader
+def load_user(user_id):
+    return Users.query.get(user_id)
 
 # Automatically tear down SQLAlchemy.
 '''
@@ -84,7 +99,9 @@ def login_required(test):
 #----------------------------------------------------------------------------#
 # Controllers.
 #----------------------------------------------------------------------------#
-
+@app.before_request
+def before_request():
+    g.user = current_user
 
 @app.route('/')
 def home():
@@ -96,10 +113,28 @@ def about():
     return render_template('pages/placeholder.about.html')
 
 
-@app.route('/login')
+@app.route('/login', methods=["GET","POST"])
 def login():
     form = LoginForm(request.form)
-    return render_template('forms/login.html', form=form)
+    if (request.method == "GET"):
+        print ("Hooo")
+        return render_template('forms/login.html', form = form)
+
+
+    user_id = form.user_id.data
+    password = form.password.data
+
+    registered_user = Users.query.filter_by(user_id = user_id).first()
+    if registered_user is None:
+        flash('Username is invalid' , 'error')
+        return redirect(url_for('login'))
+    if not registered_user.check_password(password):
+        flash('Password is invalid','error')
+        return redirect(url_for('login'))
+    login_user(registered_user, remember = False)
+    flash('Logged in successfully')
+    print(request.args.get('next'))
+    return redirect(request.args.get('next') or url_for('home'))
 
 
 @app.route('/register', methods=["GET","POST"])
@@ -116,12 +151,15 @@ def register():
         return redirect(url_for('login'))
     return render_template('forms/register.html', form=form)
 
-
-
 @app.route('/forgot')
 def forgot():
     form = ForgotForm(request.form)
     return render_template('forms/forgot.html', form=form)
+
+@app.route('/logout')
+def logout():
+    logout_user()
+    return redirect(url_for('home'))
 
 # Error handlers.
 
@@ -152,8 +190,7 @@ if not app.debug:
 
 # Default port:
 if __name__ == '__main__':
-    db.drop_all()
-    db.create_all()
+
     app.run()
 
 # Or specify port manually:

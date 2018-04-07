@@ -68,8 +68,13 @@
             </li>
           </ul>
           <ul class="nav navbar-nav pull-right">
-            <li><a href="{{ url_for('register') }}">Signup</a></li>
-            <li><a href="{{ url_for('login') }}">Login</a></li>
+            {% if g.user.is_authenticated()%}
+              <li><a href="{{ url_for('logout') }}">Logout</a></li>
+            {% endif %}
+            {% if not g.user.is_authenticated()%}
+              <li><a href="{{ url_for('register') }}">Signup</a></li>
+              <li><a href="{{ url_for('login') }}">Login</a></li>
+            {% endif %}
           </ul>
         </div><!--/.nav-collapse -->
       </div>
@@ -90,7 +95,7 @@
       {% endwith %}
 
       {% block content %}{% endblock %}
-      
+
     </main>
 
   </div>
