@@ -14,7 +14,7 @@ class RegisterForm(Form):
         'Password' , validators=[DataRequired(), Length(max=40)]
     )
     confirm = PasswordField(
-        'Repeat Password' , [DataRequired(), EqualTo('password', message='Passwords must match')]
+        'Repeat Password' , [DataRequired(), EqualTo('password_hash', message='Passwords must match')]
     )
     address = StringField(
         'Address' , validators=[DataRequired(), Length(max=40)]

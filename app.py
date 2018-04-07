@@ -3,15 +3,14 @@
 #----------------------------------------------------------------------------#
 
 from flask import Flask, flash, render_template, request, url_for, redirect, session
-from wtforms import Form, BooleanField, TextField, PasswordField, validators, PasswordField, StringField
 from flask.ext.sqlalchemy import SQLAlchemy
+from sqlalchemy import *
+
 import logging
 from logging import Formatter, FileHandler
 from forms import RegisterForm, LoginForm, ForgotForm
-from flask_wtf import Form
-from sqlalchemy import create_engine
-from sqlalchemy import Table, Column, String, MetaData
 
+from werkzeug.security import generate_password_hash, check_password_hash
 # Set your classes here.
 
 
@@ -21,16 +20,45 @@ from sqlalchemy import Table, Column, String, MetaData
 app = Flask(__name__)
 app.debug = True
 app.config.from_object('config')
-#db = SQLAlchemy(app)
-db = create_engine("postgres://postgres:1@127.0.0.1:5432")
-meta = MetaData(db)
-users_table = Table('users', meta,
-    Column('user_id', String, primary_key=True),
-    Column('password_hash', String),
-    Column('address', String),
-    Column('contact_number', String))
-users_table.drop()
-users_table.create()
+
+#----------------------------------------------------------------------------#
+# Prepare to connect with DB
+#----------------------------------------------------------------------------#
+db = SQLAlchemy(app)
+
+class Users(db.Model):
+    __tablename__ = 'users'
+    user_id = Column('user_id', String, primary_key=True)
+    password_hash = Column('password_hash', String)
+    address = Column('address', String)
+    contact_number = Column('contact_number', String)
+
+    def __init__(self, u, p, a, c):
+        self.user_id = u
+        self.set_password(p)
+        self.address = a
+        self.contact_number = c
+
+    def set_password(self, p):
+        self.password_hash = generate_password_hash(p)
+
+    def check_password(self, p):
+        return check_password_hash(self.password_hash, p)
+
+    def is_authenticated(self):
+        return True
+
+    def is_active(self):
+        return True
+
+    def is_anonymous(self):
+        return False
+
+    def get_id(self):
+        return unicode(self.user_id)
+
+    def __repr__(self):
+        return "<User(user id='%s')>" % (self.user_id)
 
 
 # Automatically tear down SQLAlchemy.
@@ -77,10 +105,14 @@ def login():
 @app.route('/register', methods=["GET","POST"])
 def register():
     form = RegisterForm(request.form)
-
     if(request.method == "POST"):
-        insert_statement = users_table.insert().values(user_id = form.user_id.data, password_hash = form.password_hash.data, address = form.address.data, contact_number = form.contact_number.data)
-        db.connect().execute(insert_statement)
+        if not (form.validate_on_submit()):
+            flash('User info is invalid. Try again')
+            return render_template('forms/register.html', form=form)
+        user = Users(form.user_id.data, form.password_hash.data, form.address.data, form.contact_number.data)
+        db.session.add(user)
+        db.session.commit()
+        flash('User successfully registered')
         return redirect(url_for('login'))
     return render_template('forms/register.html', form=form)
 
@@ -120,6 +152,8 @@ if not app.debug:
 
 # Default port:
 if __name__ == '__main__':
+    db.drop_all()
+    db.create_all()
     app.run()
 
 # Or specify port manually:

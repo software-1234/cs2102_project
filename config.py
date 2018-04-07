@@ -11,4 +11,4 @@ DEBUG = True
 SECRET_KEY = 'my precious'
 
 # Connect to the database
-SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'database.db')
+SQLALCHEMY_DATABASE_URI = 'postgres://postgres:1@127.0.0.1:5432'
