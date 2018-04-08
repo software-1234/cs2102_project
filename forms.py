@@ -1,5 +1,5 @@
 from flask_wtf import Form
-from wtforms import TextField, PasswordField, StringField
+from wtforms import TextField, PasswordField, StringField, DateTimeField, DecimalField
 from wtforms.fields.html5 import TelField
 from wtforms.validators import DataRequired, EqualTo, Length
 
@@ -32,4 +32,27 @@ class LoginForm(Form):
 class ForgotForm(Form):
     email = TextField(
         'Email', validators=[DataRequired(), Length(min=6, max=40)]
+    )
+
+class AddForm(Form):
+    title = StringField(
+        'Title' , validators=[DataRequired(), Length(max=50)]
+    )
+    description = StringField(
+        'Description'
+    )
+    datetime_start = DateTimeField(
+        'Start' , validators=[DataRequired()]
+    )
+    datetime_end = DateTimeField(
+        'End' , validators=[DataRequired()]
+    )
+    address = StringField(
+        'Address' , validators=[DataRequired(), Length(max=50)]
+    )
+    min_bid = DecimalField(
+        'Minimun Bid', validators=[DataRequired()]
+    )
+    datetime_expire = DateTimeField(
+        'Valid until' , validators=[DataRequired()]
     )

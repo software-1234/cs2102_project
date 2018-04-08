@@ -1,0 +1,16 @@
+{% extends 'layouts/main.html' %}
+{% block title %}Home{% endblock %}
+{% block content %}
+
+<form method="post" class="form">
+  <h3 class="form-heading">Add a Task <a href="{{ url_for('home') }}" title="Back to homepage"><i class="fa fa-home pull-right"></i></a></h3>
+  {{ form.title(class_ = 'form-control first-input', placeholder = form.title.label.text, required = true, autofocus = true) }}
+  {{ form.description(class_ = 'form-control first-input', placeholder = form.description.label.text) }}
+  {{ form.datetime_start(class_ = 'form-control first-input', placeholder = form.datetime_start.label.text, required = true) }}
+  {{ form.datetime_end(class_ = 'form-control first-input', placeholder = form.datetime_end.label.text, required = true) }}
+  {{ form.address(class_ = 'form-control first-input', placeholder = form.address.label.text, required = true) }}
+  {{ form.min_bid(class_ = 'form-control first-input', placeholder = form.min_bid.label.text, required = true) }}
+  {{ form.datetime_expire(class_ = 'form-control last-input', placeholder = form.datetime_expire.label.text, required = true) }}
+  <input type="submit" value="Submit" class="btn btn-primary btn-lg btn-block">
+</form>
+{% endblock %}

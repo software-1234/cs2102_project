@@ -7,7 +7,7 @@ from sqlalchemy import *
 
 import logging
 from logging import Formatter, FileHandler
-from forms import RegisterForm, LoginForm, ForgotForm
+from forms import *
 
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -62,6 +62,34 @@ class Users(db.Model):
 
     def __repr__(self):
         return "<User(user id='%s')>" % (self.user_id)
+
+class Tasks(db.Model):
+    __tablename__ = 'tasks'
+    task_id = Column('task_id', Integer, primary_key=True, autoincrement=True)
+    employer_user_id = Column('employer_user_id', String, ForeignKey("users.user_id"))
+    employee_user_id = Column('employee_user_id', String, ForeignKey("users.user_id"))
+    datetime_start = Column('datetime_start', DateTime)
+    datetime_end = Column('datetime_end', DateTime)
+    address = Column('address', String)
+    title = Column('title', String)
+    description = Column('description', String)
+    min_bid = Column('min_bid', Numeric)
+    datetime_expire = Column('datetime_expire', DateTime)
+
+    def __init__(self, t, er, ee, ds, de, a, ti, d, m, dex):
+        self.task_id = t
+        self.employer_user_id = er
+        self.employee_user_id = ee
+        self.datetime_start = ds
+        self.datetime_end = de
+        self.address = a
+        self.title = ti
+        self.description = d
+        self.min_bid = m
+        self.datetime_expire = dex
+
+    def __repr__(self):
+        return "<Tasks(task_id='%s')>" % (self.task_id)
 
 db.drop_all()
 db.create_all()
@@ -118,6 +146,11 @@ def home():
 @app.route('/about')
 def about():
     return render_template('pages/placeholder.about.html')
+
+@app.route('/add')
+def add():
+    form = AddForm(request.form)
+    return render_template('pages/placeholder.add.html', form = form)
 
 @app.route('/mytasks')
 def mytasks():
