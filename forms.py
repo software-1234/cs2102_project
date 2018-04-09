@@ -42,10 +42,10 @@ class AddForm(Form):
         'Description'
     )
     datetime_start = DateTimeField(
-        'Start' , validators=[DataRequired()]
+        'EX)2018-04-28 13:00:00' , validators=[DataRequired()]
     )
     datetime_end = DateTimeField(
-        'End' , validators=[DataRequired()]
+        'EX)2018-04-28 17:00:00' , validators=[DataRequired()]
     )
     address = StringField(
         'Address' , validators=[DataRequired(), Length(max=50)]
@@ -54,5 +54,5 @@ class AddForm(Form):
         'Minimun Bid', validators=[DataRequired()]
     )
     datetime_expire = DateTimeField(
-        'Valid until' , validators=[DataRequired()]
+        'EX)2018-04-28 00:00:00' , validators=[DataRequired()]
     )

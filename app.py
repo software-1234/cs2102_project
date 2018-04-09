@@ -11,7 +11,7 @@ from forms import *
 
 from werkzeug.security import generate_password_hash, check_password_hash
 
-from flask.ext.login import LoginManager, login_user, logout_user, current_user, login_required
+from flask_login import LoginManager, login_user, logout_user, current_user, login_required
 
 #----------------------------------------------------------------------------#
 # App Config.
@@ -67,7 +67,7 @@ class Tasks(db.Model):
     __tablename__ = 'tasks'
     task_id = Column('task_id', Integer, primary_key=True, autoincrement=True)
     employer_user_id = Column('employer_user_id', String, ForeignKey("users.user_id"))
-    employee_user_id = Column('employee_user_id', String, ForeignKey("users.user_id"))
+    employee_user_id = Column('employee_user_id', String, ForeignKey("users.user_id"), default = None)
     datetime_start = Column('datetime_start', DateTime)
     datetime_end = Column('datetime_end', DateTime)
     address = Column('address', String)
@@ -76,14 +76,13 @@ class Tasks(db.Model):
     min_bid = Column('min_bid', Numeric)
     datetime_expire = Column('datetime_expire', DateTime)
 
-    def __init__(self, t, er, ee, ds, de, a, ti, d, m, dex):
-        self.task_id = t
-        self.employer_user_id = er
-        self.employee_user_id = ee
+    def __init__(self, ds, de, a, t, d, m, dex):
+        print(current_user)
+        self.employer_user_id = current_user.get_id()
         self.datetime_start = ds
         self.datetime_end = de
         self.address = a
-        self.title = ti
+        self.title = t
         self.description = d
         self.min_bid = m
         self.datetime_expire = dex
@@ -91,14 +90,14 @@ class Tasks(db.Model):
     def __repr__(self):
         return "<Tasks(task_id='%s')>" % (self.task_id)
 
-db.drop_all()
 db.create_all()
 
 # Register Admin
 # (Anybody who has a better idea about admin? LOL LOL)
-admin = Users("admin", "1", "", "")
-db.session.add(admin)
-db.session.commit()
+if Users.query.filter_by(user_id="admin").first() is None:
+    admin = Users("admin", "1", "", "")
+    db.session.add(admin)
+    db.session.commit()
 
 #----------------------------------------------------------------------------#
 # Login
@@ -147,11 +146,22 @@ def home():
 def about():
     return render_template('pages/placeholder.about.html')
 
-@app.route('/add')
+@login_required
+@app.route('/add', methods=["GET","POST"])
 def add():
     form = AddForm(request.form)
-    return render_template('pages/placeholder.add.html', form = form)
+    if(request.method == "POST"):
+        if not (form.validate_on_submit()):
+            flash('Task info is invalid. Try again')
+            return render_template('pages/placeholder.add.html', form=form)
+        task = Tasks(form.datetime_start.data, form.datetime_end.data, form.address.data, form.title.data, form.description.data, form.min_bid.data, form.datetime_expire.data)
+        db.session.add(task)
+        db.session.commit()
+        flash('A task successfully added')
+        return redirect(request.args.get('next') or url_for('home'))
+    return render_template('pages/placeholder.add.html', form=form)
 
+@login_required
 @app.route('/mytasks')
 def mytasks():
     return render_template('pages/placeholder.mytasks.html')
@@ -173,7 +183,6 @@ def login():
         return redirect(url_for('login'))
     login_user(registered_user, remember = False)
     flash('Logged in successfully')
-    print(request.args.get('next'))
     return redirect(request.args.get('next') or url_for('home'))
 
 
