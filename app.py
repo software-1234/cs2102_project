@@ -2,8 +2,6 @@
 # Imports
 #----------------------------------------------------------------------------#
 from flask import Flask, flash, render_template, request, url_for, redirect, session, g
-from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import *
 
 import logging
 from logging import Formatter, FileHandler
@@ -23,75 +21,7 @@ app.config.from_object('config')
 #----------------------------------------------------------------------------#
 # DB
 #----------------------------------------------------------------------------#
-db = SQLAlchemy(app)
-
-# Set your classes here.
-class Users(db.Model):
-    __tablename__ = 'users'
-    user_id = Column('user_id', String, primary_key=True)
-    password_hash = Column('password_hash', String)
-    address = Column('address', String)
-    contact_number = Column('contact_number', String)
-    is_admin = Column('is_admin', BOOLEAN, default=False)
-
-    def __init__(self, u, p, a, c):
-        self.user_id = u
-        self.set_password(p)
-        self.address = a
-        self.contact_number = c
-        self.is_admin = False
-
-    def set_password(self, p):
-        self.password_hash = generate_password_hash(p)
-
-    def check_password(self, p):
-        return check_password_hash(self.password_hash, p)
-
-    def is_authenticated(self):
-        return True
-
-    def is_active(self):
-        return True
-
-    def is_anonymous(self):
-        return False
-
-    def is_admin(self):
-        return self.is_admin
-
-    def get_id(self):
-        return unicode(self.user_id)
-
-    def __repr__(self):
-        return "<User(user id='%s')>" % (self.user_id)
-
-class Tasks(db.Model):
-    __tablename__ = 'tasks'
-    task_id = Column('task_id', Integer, primary_key=True, autoincrement=True)
-    employer_user_id = Column('employer_user_id', String, ForeignKey("users.user_id"))
-    employee_user_id = Column('employee_user_id', String, ForeignKey("users.user_id"), default = None)
-    datetime_start = Column('datetime_start', DateTime)
-    datetime_end = Column('datetime_end', DateTime)
-    address = Column('address', String)
-    title = Column('title', String)
-    description = Column('description', String)
-    min_bid = Column('min_bid', Numeric)
-    datetime_expire = Column('datetime_expire', DateTime)
-
-    def __init__(self, ds, de, a, t, d, m, dex):
-        self.employer_user_id = current_user.get_id()
-        self.datetime_start = ds
-        self.datetime_end = de
-        self.address = a
-        self.title = t
-        self.description = d
-        self.min_bid = m
-        self.datetime_expire = dex
-
-    def __repr__(self):
-        return "<Tasks(task_id='%s')>" % (self.task_id)
-
-db.create_all()
+from models import db, Users, Tasks
 
 #----------------------------------------------------------------------------#
 # Login
@@ -109,19 +39,6 @@ def load_user(user_id):
 @app.teardown_request
 def shutdown_session(exception=None):
     db_session.remove()
-'''
-
-# Login required decorator.
-'''
-def login_required(test):
-    @wraps(test)
-    def wrap(*args, **kwargs):
-        if 'logged_in' in session:
-            return test(*args, **kwargs)
-        else:
-            flash('You need to login first.')
-            return redirect(url_for('login'))
-    return wrap
 '''
 
 #----------------------------------------------------------------------------#

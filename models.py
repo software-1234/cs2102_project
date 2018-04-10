@@ -1,31 +1,76 @@
-from sqlalchemy import create_engine
-from sqlalchemy.orm import scoped_session, sessionmaker
-from sqlalchemy.ext.declarative import declarative_base
-# from sqlalchemy import Column, Integer, String
-# from app import db
+from __main__ import app
+from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import *
 
-engine = create_engine('sqlite:///database.db', echo=True)
-db_session = scoped_session(sessionmaker(autocommit=False,
-                                         autoflush=False,
-                                         bind=engine))
-Base = declarative_base()
-Base.query = db_session.query_property()
+from werkzeug.security import generate_password_hash, check_password_hash
+
+db = SQLAlchemy(app)
 
 # Set your classes here.
+class Users(db.Model):
+    __tablename__ = 'users'
+    user_id = Column('user_id', String, primary_key=True)
+    password_hash = Column('password_hash', String)
+    address = Column('address', String)
+    contact_number = Column('contact_number', String)
+    admin = Column('is_admin', BOOLEAN, default=False)
 
-'''
-class User(Base):
-    __tablename__ = 'Users'
+    def __init__(self, u, p, a, c):
+        self.user_id = u
+        self.set_password(p)
+        self.address = a
+        self.contact_number = c
+        self.is_admin = False
 
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(120), unique=True)
-    email = db.Column(db.String(120), unique=True)
-    password = db.Column(db.String(30))
+    def set_password(self, p):
+        self.password_hash = generate_password_hash(p)
 
-    def __init__(self, name=None, password=None):
-        self.name = name
-        self.password = password
-'''
+    def check_password(self, p):
+        return check_password_hash(self.password_hash, p)
+
+    def is_authenticated(self):
+        return True
+
+    def is_active(self):
+        return True
+
+    def is_anonymous(self):
+        return False
+
+    def is_admin(self):
+        return self.admin
+
+    def get_id(self):
+        return unicode(self.user_id)
+
+    def __repr__(self):
+        return "<User(user id='%s')>" % (self.user_id)
+
+class Tasks(db.Model):
+    __tablename__ = 'tasks'
+    task_id = Column('task_id', Integer, primary_key=True, autoincrement=True)
+    employer_user_id = Column('employer_user_id', String, ForeignKey("users.user_id"))
+    employee_user_id = Column('employee_user_id', String, ForeignKey("users.user_id"), default = None)
+    datetime_start = Column('datetime_start', DateTime)
+    datetime_end = Column('datetime_end', DateTime)
+    address = Column('address', String)
+    title = Column('title', String)
+    description = Column('description', String)
+    min_bid = Column('min_bid', Numeric)
+    datetime_expire = Column('datetime_expire', DateTime)
+
+    def __init__(self, ds, de, a, t, d, m, dex):
+        self.employer_user_id = current_user.get_id()
+        self.datetime_start = ds
+        self.datetime_end = de
+        self.address = a
+        self.title = t
+        self.description = d
+        self.min_bid = m
+        self.datetime_expire = dex
+
+    def __repr__(self):
+        return "<Tasks(task_id='%s')>" % (self.task_id)
 
 # Create tables.
-Base.metadata.create_all(bind=engine)
+db.create_all()
