@@ -32,12 +32,14 @@ class Users(db.Model):
     password_hash = Column('password_hash', String)
     address = Column('address', String)
     contact_number = Column('contact_number', String)
+    is_admin = Column('is_admin', BOOLEAN, default=False)
 
     def __init__(self, u, p, a, c):
         self.user_id = u
         self.set_password(p)
         self.address = a
         self.contact_number = c
+        self.is_admin = False
 
     def set_password(self, p):
         self.password_hash = generate_password_hash(p)
@@ -55,7 +57,7 @@ class Users(db.Model):
         return False
 
     def is_admin(self):
-        return self.user_id == "admin"
+        return self.is_admin
 
     def get_id(self):
         return unicode(self.user_id)
@@ -90,13 +92,6 @@ class Tasks(db.Model):
         return "<Tasks(task_id='%s')>" % (self.task_id)
 
 db.create_all()
-
-# Register Admin
-# (Anybody who has a better idea about admin? LOL LOL)
-if Users.query.filter_by(user_id="admin").first() is None:
-    admin = Users("admin", "1", "", "")
-    db.session.add(admin)
-    db.session.commit()
 
 #----------------------------------------------------------------------------#
 # Login
@@ -203,7 +198,7 @@ def register():
         if not (form.validate_on_submit()):
             flash('User info is invalid. Try again')
             return render_template('forms/register.html', form=form)
-        user = db.session.query(Users).filter_by(user_id = form.user_id.data)
+        user = db.session.query(Users).filter_by(user_id = form.user_id.data).first()
         if user:
             flash('User name is already taken. Try again')
             return render_template('forms/register.html', form=form)

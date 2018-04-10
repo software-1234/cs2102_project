@@ -43,6 +43,10 @@ tr:nth-child(even) {
 			</table>
 		</p>
 		{% endif %}
+		{% if not g.user.is_authenticated %}
+		<h1>Complete your tasks today!</h1>
+		<p>This is an app to help users hire temporary help to complete tasks.</p>
+		{% endif %}
 
 	</div>
 
