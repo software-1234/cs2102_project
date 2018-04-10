@@ -203,6 +203,10 @@ def register():
         if not (form.validate_on_submit()):
             flash('User info is invalid. Try again')
             return render_template('forms/register.html', form=form)
+        user = db.session.query(Users).filter_by(user_id = form.user_id.data)
+        if user:
+            flash('User name is already taken. Try again')
+            return render_template('forms/register.html', form=form)
         user = Users(form.user_id.data, form.password_hash.data, form.address.data, form.contact_number.data)
         db.session.add(user)
         db.session.commit()

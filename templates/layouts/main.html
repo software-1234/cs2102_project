@@ -69,7 +69,7 @@
             </li>
           </ul>
           <ul class="nav navbar-nav pull-right">
-            {% if g.user.is_authenticated()%}
+            {% if g.user.is_authenticated %}
               <li class="dropdown">
                 <a class="dropdown-toggle" data-toggle="dropdown">My Tasks <b class="caret"></b></a>
                 <ul class="dropdown-menu">
@@ -79,7 +79,7 @@
               </li>
               <li><a href="{{ url_for('logout') }}">Logout</a></li>
             {% endif %}
-            {% if not g.user.is_authenticated()%}
+            {% if not g.user.is_authenticated %}
               <li><a href="{{ url_for('register') }}">Signup</a></li>
               <li><a href="{{ url_for('login') }}">Login</a></li>
             {% endif %}
