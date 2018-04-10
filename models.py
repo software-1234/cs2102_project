@@ -3,6 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import *
 
 from werkzeug.security import generate_password_hash, check_password_hash
+import  datetime
 
 db = SQLAlchemy(app)
 
@@ -10,6 +11,7 @@ db = SQLAlchemy(app)
 class Users(db.Model):
     __tablename__ = 'users'
     user_id = Column('user_id', String, primary_key=True)
+    display_name = Column('display_name', String)
     password_hash = Column('password_hash', String)
     address = Column('address', String)
     contact_number = Column('contact_number', String)
@@ -20,7 +22,7 @@ class Users(db.Model):
         self.set_password(p)
         self.address = a
         self.contact_number = c
-        self.is_admin = False
+        self.admin = False
 
     def set_password(self, p):
         self.password_hash = generate_password_hash(p)
@@ -58,6 +60,7 @@ class Tasks(db.Model):
     description = Column('description', String)
     min_bid = Column('min_bid', Numeric)
     datetime_expire = Column('datetime_expire', DateTime)
+    last_updated = Column('last_updated', DateTime, default=datetime.datetime.now , onupdate=datetime.datetime.now)
 
     def __init__(self, ds, de, a, t, d, m, dex):
         self.employer_user_id = current_user.get_id()
@@ -71,6 +74,15 @@ class Tasks(db.Model):
 
     def __repr__(self):
         return "<Tasks(task_id='%s')>" % (self.task_id)
+
+class Bids(db.Model):
+    __tablename__ = 'bids'
+    task_id = Column('task_id', Integer, ForeignKey("tasks.task_id"), primary_key=True, nullable=False)
+    user_id = Column('user_id', String, ForeignKey("users.user_id"), primary_key=True, nullable=False)
+    last_updated = Column('last_updated', DateTime, default=datetime.datetime.now , onupdate=datetime.datetime.now)
+    bid_amount = Column('bid_amount', Numeric, default=0.00)
+    status = Column('status', BOOLEAN, default=False)
+    comment = Column('comment', String)
 
 # Create tables.
 db.create_all()
