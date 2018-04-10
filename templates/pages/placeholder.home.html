@@ -19,12 +19,9 @@ tr:nth-child(even) {
 </style>
 </head>
 
-<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-<body>
-
 	<div class="page-header">
-		{% if g.user.is_authenticated()%}
-		<h1>Get your tasks! {{current_user.get_id()}}</h1>
+		{% if g.user.is_authenticated() %}
+		<h1>Get your tasks! </h1>
 		<p class="form">
 			<table id = "t">
 				<tr>
@@ -34,18 +31,17 @@ tr:nth-child(even) {
 					<th>with Minimum Bid</th>
 				</tr>
 				{% for task in tasks %}
-          <tr>
-						<td><a data-toggle="modal" data-target="#myModal">{{task.title}}</a></td>
-						<td><a data-toggle="modal" data-target="#myModal">{{task.datetime_start}}</a></td>
-						<td><a data-toggle="modal" data-target="#myModal">{{task.datetime_end}}</a></td>
-						<td><a data-toggle="modal" data-target="#myModal">{{task.min_bid}}</a></td>
+					<tr>
+						<td>{{task.title}}</td>
+						<td>{{task.datetime_start}}</td>
+						<td>{{task.datetime_end}}</td>
+						<td>{{task.min_bid}}</td>
 					</tr>
 				{% endfor %}
 			</table>
-
 		</p>
 		{% endif %}
-		{% if not g.user.is_authenticated()%}
+		{% if not g.user.is_authenticated() %}
 		<h1>Complete your tasks today!</h1>
 		<p>This is an app to help users hire temporary help to complete tasks.</p>
 		{% endif %}

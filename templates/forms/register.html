@@ -9,6 +9,7 @@
     {{ form.password_hash(class_ = 'form-control', placeholder = form.password_hash.label.text, required = true) }}
     {{ form.confirm(class_ = 'form-control last-input', placeholder = form.confirm.label.text, required = true) }}
     {{ form.address(class_ = 'form-control last-input', placeholder = form.address.label.text, required = true) }}
+    {{ form.display_name(class_ = 'form-control last-input', placeholder = form.display_name.label.text, required = true) }}
     {{ form.contact_number(class_ = 'form-control last-input', placeholder = form.contact_number.label.text, required = true) }}
     <p class="pull-left"><a href="{{ url_for('login') }}">Login</a></p>
     <input type="submit" value="Register" class="btn btn-primary btn-lg btn-block" >

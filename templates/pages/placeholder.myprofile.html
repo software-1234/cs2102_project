@@ -1,0 +1,16 @@
+{% extends 'layouts/main.html' %}
+{% block title %}My Profile{% endblock %}
+{% block content %}
+  <form method="post" class="form">
+    <h3 class="form-heading">My Profile<a href="{{ url_for('home') }}" title="Back to homepage"><i class="fa fa-home pull-right"></i></a></h3>
+    {{ form.hidden_tag() }}
+    <label for="user_id">User ID</label>
+    {{ form.user_id(class_ = 'form-control first-input', placeholder = profile.user_id, required = true, disabled = true) }}
+    <label for="address">Address</label>
+    {{ form.address(class_ = 'form-control last-input', placeholder = profile.address, required = true, disabled = true) }}
+    <label for="display_name">Display Name</label>
+    {{ form.display_name(class_ = 'form-control last-input', placeholder = profile.display_name, required = true, disabled = true) }}
+    <label for="contact_number">Contact Number</label>
+    {{ form.contact_number(class_ = 'form-control last-input', placeholder = profile.contact_number, required = true, disabled = true) }}
+  </form>
+{% endblock %}
