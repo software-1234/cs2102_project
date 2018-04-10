@@ -86,5 +86,14 @@ class Bids(db.Model):
     status = Column('status', BOOLEAN, default=False)
     comment = Column('comment', String)
 
+    def __init__(self, ti, ui, ba, co):
+        self.task_id = ti
+        self.user_id = ui
+        self.bid_amount = ba
+        self.comment = co
+
+    def __repr__(self):
+        return "<Bids(task_id='%s', user_id='%s')>" % (self.task_id, self.user_id)
+
 # Create tables.
 db.create_all()

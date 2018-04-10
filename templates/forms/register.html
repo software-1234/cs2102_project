@@ -5,11 +5,16 @@
   <form method="post" class="form">
     <h3 class="form-heading">Register <a href="{{ url_for('home') }}" title="Back to homepage"><i class="fa fa-home pull-right"></i></a></h3>
     {{ form.hidden_tag() }}
+    <label for="user_id">User ID</label>
     {{ form.user_id(class_ = 'form-control first-input', placeholder = form.user_id.label.text, required = true, autofocus = true) }}
+    <label for="password_hash">Password</label>
     {{ form.password_hash(class_ = 'form-control', placeholder = form.password_hash.label.text, required = true) }}
     {{ form.confirm(class_ = 'form-control last-input', placeholder = form.confirm.label.text, required = true) }}
+    <label for="address">Address</label>
     {{ form.address(class_ = 'form-control last-input', placeholder = form.address.label.text, required = true) }}
+    <label for="display_name">Display Name</label>
     {{ form.display_name(class_ = 'form-control last-input', placeholder = form.display_name.label.text, required = true) }}
+    <label for="contact_number">Contact Number</label>
     {{ form.contact_number(class_ = 'form-control last-input', placeholder = form.contact_number.label.text, required = true) }}
     <p class="pull-left"><a href="{{ url_for('login') }}">Login</a></p>
     <input type="submit" value="Register" class="btn btn-primary btn-lg btn-block" >

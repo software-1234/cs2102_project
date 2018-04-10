@@ -1,6 +1,6 @@
 from flask_wtf import Form
-from wtforms import TextField, PasswordField, StringField, DateTimeField, DecimalField
-from wtforms.fields.html5 import TelField
+from wtforms import TextField, PasswordField, StringField, DateTimeField
+from wtforms.fields.html5 import TelField, DateTimeLocalField, SearchField, DecimalField
 from wtforms.validators import DataRequired, EqualTo, Length
 
 # Set your classes here.
@@ -19,7 +19,7 @@ class RegisterForm(Form):
     address = StringField(
         'Address' , validators=[DataRequired(), Length(max=40)]
     )
-    contact_number = StringField(
+    contact_number = TelField(
         'Contact Number' , validators=[DataRequired(), Length(max=40)]
     )
     display_name = StringField(
@@ -44,11 +44,11 @@ class AddForm(Form):
     description = StringField(
         'Description'
     )
-    datetime_start = DateTimeField(
-        'EX)2018-04-28 13:00:00' , validators=[DataRequired()]
+    datetime_start = DateTimeLocalField(
+        'EX)2018-04-28 13:00:00' , format='%d-%m-%Y', validators=[DataRequired()]
     )
-    datetime_end = DateTimeField(
-        'EX)2018-04-28 17:00:00' , validators=[DataRequired()]
+    datetime_end = DateTimeLocalField(
+        'EX)2018-04-28 17:00:00' , format='%d-%m-%Y', validators=[DataRequired()]
     )
     address = StringField(
         'Address' , validators=[DataRequired(), Length(max=50)]
@@ -56,6 +56,6 @@ class AddForm(Form):
     min_bid = DecimalField(
         'Minimun Bid', validators=[DataRequired()]
     )
-    datetime_expire = DateTimeField(
-        'EX)2018-04-28 00:00:00' , validators=[DataRequired()]
+    datetime_expire = DateTimeLocalField(
+        'EX)2018-04-28 00:00:00' , format='%d-%m-%Y', validators=[DataRequired()]
     )

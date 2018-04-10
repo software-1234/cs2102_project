@@ -50,7 +50,7 @@ def before_request():
 
 @app.route('/')
 def home():
-    tasks = Tasks.query.all()
+    tasks = Tasks.query.order_by(Tasks.last_updated.desc()).all()
     return render_template('pages/placeholder.home.html', **locals())
 
 
@@ -81,7 +81,7 @@ def mytasks_employer():
     return render_template('pages/placeholder.mytasks.html', **locals())
 
 @login_required
-@app.route('/mytasks_empolyee')
+@app.route('/mytasks_employee')
 def mytasks_employee():
     tasks = Tasks.query.filter_by(employee_user_id=current_user.get_id()).all()
     tasks_len = len(tasks)
