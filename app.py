@@ -12,6 +12,7 @@ from forms import *
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from flask_login import LoginManager, login_user, logout_user, current_user, login_required
+from functools import wraps
 
 #----------------------------------------------------------------------------#
 # App Config.
@@ -32,12 +33,14 @@ class Users(db.Model):
     password_hash = Column('password_hash', String)
     address = Column('address', String)
     contact_number = Column('contact_number', String)
+    is_admin = Column('is_admin', BOOLEAN, default=False)
 
     def __init__(self, u, p, a, c):
         self.user_id = u
         self.set_password(p)
         self.address = a
         self.contact_number = c
+        self.is_admin = False
 
     def set_password(self, p):
         self.password_hash = generate_password_hash(p)
@@ -55,7 +58,7 @@ class Users(db.Model):
         return False
 
     def is_admin(self):
-        return self.user_id == "admin"
+        return self.is_admin
 
     def get_id(self):
         return unicode(self.user_id)
@@ -91,13 +94,6 @@ class Tasks(db.Model):
 
 db.create_all()
 
-# Register Admin
-# (Anybody who has a better idea about admin? LOL LOL)
-if Users.query.filter_by(user_id="admin").first() is None:
-    admin = Users("admin", "1", "", "")
-    db.session.add(admin)
-    db.session.commit()
-
 #----------------------------------------------------------------------------#
 # Login
 #----------------------------------------------------------------------------#
@@ -109,6 +105,7 @@ login_manager.login_view = 'login'
 def load_user(user_id):
     return Users.query.get(user_id)
 
+
 # Automatically tear down SQLAlchemy.
 '''
 @app.teardown_request
@@ -117,7 +114,6 @@ def shutdown_session(exception=None):
 '''
 
 # Login required decorator.
-'''
 def login_required(test):
     @wraps(test)
     def wrap(*args, **kwargs):
@@ -127,7 +123,6 @@ def login_required(test):
             flash('You need to login first.')
             return redirect(url_for('login'))
     return wrap
-'''
 
 #----------------------------------------------------------------------------#
 # Controllers.
@@ -165,14 +160,20 @@ def add():
 @app.route('/mytasks_employer')
 def mytasks_employer():
     tasks = Tasks.query.filter_by(employer_user_id=current_user.get_id()).all()
-    tasks_len = len(tasks)
+    for task in tasks:
+        print task.employer_user_id
+    print current_user.get_id()
+    role = "employer"
     return render_template('pages/placeholder.mytasks.html', **locals())
 
 @login_required
 @app.route('/mytasks_empolyee')
 def mytasks_employee():
     tasks = Tasks.query.filter_by(employee_user_id=current_user.get_id()).all()
-    tasks_len = len(tasks)
+    for task in tasks:
+        print task.employee_user_id
+    print current_user.get_id()
+    role = "employee"
     return render_template('pages/placeholder.mytasks.html', **locals())
 
 
@@ -202,6 +203,10 @@ def register():
     if(request.method == "POST"):
         if not (form.validate_on_submit()):
             flash('User info is invalid. Try again')
+            return render_template('forms/register.html', form=form)
+        user = db.session.query(Users).filter_by(user_id = form.user_id.data).first()
+        if user:
+            flash('User name is already taken. Try again')
             return render_template('forms/register.html', form=form)
         user = Users(form.user_id.data, form.password_hash.data, form.address.data, form.contact_number.data)
         db.session.add(user)

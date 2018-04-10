@@ -21,7 +21,12 @@ tr:nth-child(even) {
 </style>
 </head>
 <div class="page-header">
-  <h1>My Tasks</h1>
+  {% if role == "employee" %}
+  <h1>My Tasks as an employee</h1>
+  {% endif %}
+  {% if role == "employer" %}
+  <h1>My Tasks as an employer</h1>
+  {% endif %}
 </div>
 <p class="form">
 	<table id = "t">
