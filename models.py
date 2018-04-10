@@ -47,6 +47,9 @@ class Users(db.Model):
     def get_id(self):
         return unicode(self.user_id)
 
+    def get_user(self, uid):
+        return Users.query.filter_by(user_id=uid).first()
+
     def __repr__(self):
         return "<User(user id='%s')>" % (self.user_id)
 

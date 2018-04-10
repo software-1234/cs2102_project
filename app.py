@@ -79,9 +79,6 @@ def add():
 @app.route('/mytasks_employer')
 def mytasks_employer():
     tasks = Tasks.query.filter_by(employer_user_id=current_user.get_id()).all()
-    for task in tasks:
-        print task.employer_user_id
-    print current_user.get_id()
     role = "employer"
     return render_template('pages/placeholder.mytasks.html', **locals())
 
@@ -89,9 +86,6 @@ def mytasks_employer():
 @app.route('/mytasks_empolyee')
 def mytasks_employee():
     tasks = Tasks.query.filter_by(employee_user_id=current_user.get_id()).all()
-    for task in tasks:
-        print task.employee_user_id
-    print current_user.get_id()
     role = "employee"
     return render_template('pages/placeholder.mytasks.html', **locals())
 
