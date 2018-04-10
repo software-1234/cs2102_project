@@ -1,10 +1,45 @@
 {% extends 'layouts/main.html' %}
 {% block title %}Home{% endblock %}
 {% block content %}
+<head>
+<style>
+table {
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+td, th {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 8px;
+}
+
+tr:nth-child(even) {
+    background-color: #dddddd;
+}
+</style>
+</head>
 
 <div class="page-header">
-  <h1>Sticky footer with fixed navbar</h1>
-</div>
-<p class="lead">Pin a fixed-height footer to the bottom of the viewport in desktop browsers with this custom HTML and CSS. A fixed navbar has been added within <code>#wrap</code> with <code>padding-top: 60px;</code> on the <code>.container</code>.</p>
+  <h1>Get your tasks! </h1>
+<p class="form">
+	<table id = "t">
+	  <tr>
+	    <th>Task</th>
+	    <th>Starts</th>
+	    <th>Ends</th>
+			<th>with Minimum Bid</th>
+	  </tr>
+		{% for task in tasks %}
+			<tr>
+				<td>{{task.title}}</td>
+				<td>{{task.datetime_start}}</td>
+				<td>{{task.datetime_end}}</td>
+				<td>{{task.min_bid}}</td>
+			</tr>
+		{% endfor %}
+	</table>
+</p>
 
 {% endblock %}

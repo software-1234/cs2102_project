@@ -77,7 +77,6 @@ class Tasks(db.Model):
     datetime_expire = Column('datetime_expire', DateTime)
 
     def __init__(self, ds, de, a, t, d, m, dex):
-        print(current_user)
         self.employer_user_id = current_user.get_id()
         self.datetime_start = ds
         self.datetime_end = de
@@ -139,7 +138,8 @@ def before_request():
 
 @app.route('/')
 def home():
-    return render_template('pages/placeholder.home.html')
+    tasks = Tasks.query.all()
+    return render_template('pages/placeholder.home.html', **locals())
 
 
 @app.route('/about')
@@ -162,9 +162,19 @@ def add():
     return render_template('pages/placeholder.add.html', form=form)
 
 @login_required
-@app.route('/mytasks')
-def mytasks():
-    return render_template('pages/placeholder.mytasks.html')
+@app.route('/mytasks_employer')
+def mytasks_employer():
+    tasks = Tasks.query.filter_by(employer_user_id=current_user.get_id()).all()
+    tasks_len = len(tasks)
+    return render_template('pages/placeholder.mytasks.html', **locals())
+
+@login_required
+@app.route('/mytasks_empolyee')
+def mytasks_employee():
+    tasks = Tasks.query.filter_by(employee_user_id=current_user.get_id()).all()
+    tasks_len = len(tasks)
+    return render_template('pages/placeholder.mytasks.html', **locals())
+
 
 @app.route('/login', methods=["GET","POST"])
 def login():
