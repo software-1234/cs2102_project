@@ -21,25 +21,29 @@ tr:nth-child(even) {
 </style>
 </head>
 
-<div class="page-header">
-  <h1>Get your tasks! </h1>
-<p class="form">
-	<table id = "t">
-	  <tr>
-	    <th>Task</th>
-	    <th>Starts</th>
-	    <th>Ends</th>
-			<th>with Minimum Bid</th>
-	  </tr>
-		{% for task in tasks %}
-			<tr>
-				<td>{{task.title}}</td>
-				<td>{{task.datetime_start}}</td>
-				<td>{{task.datetime_end}}</td>
-				<td>{{task.min_bid}}</td>
-			</tr>
-		{% endfor %}
-	</table>
-</p>
+	<div class="page-header">
+		{% if g.user.is_authenticated %}
+		<h1>Get your tasks! </h1>
+		<p class="form">
+			<table id = "t">
+				<tr>
+					<th>Task</th>
+					<th>Starts</th>
+					<th>Ends</th>
+					<th>with Minimum Bid</th>
+				</tr>
+				{% for task in tasks %}
+					<tr>
+						<td>{{task.title}}</td>
+						<td>{{task.datetime_start}}</td>
+						<td>{{task.datetime_end}}</td>
+						<td>{{task.min_bid}}</td>
+					</tr>
+				{% endfor %}
+			</table>
+		</p>
+		{% endif %}
+
+	</div>
 
 {% endblock %}
