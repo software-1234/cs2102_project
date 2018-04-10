@@ -48,7 +48,67 @@ tr:nth-child(even) {
       </tr>
 		{% endfor %}
 	</table>
-
+  {% for task in tasks %}
+    <div class="container" >
+    <!-- Modal -->
+      <div class="modal fade" role="dialog" id="{{task.task_id}}">
+        <div class="modal-dialog">
+          <!-- Modal content-->
+          <div class="modal-content" >
+            <div class="modal-header" >
+              <button type="button" class="close" data-dismiss="modal" >&times;</button>
+              <h4 class="modal-title">{{task.title}}</h4>
+            </div>
+            <div class="modal-body" >
+              <table>
+                <thead>
+                </thead>
+                <tbody class="modal-table" aria-hidden="true">
+                  <tr>
+                    <th>Description</th>
+                    <td>{{task.description}}</td>
+                  </tr>
+                  <tr>
+                    <th>Employer</th>
+                    <td>{{current_user.get_user(task.employer_user_id).display_name}}</td>
+                  </tr>
+                  <tr>
+                    <th>Contact number</th>
+                    <td>{{current_user.get_user(task.employer_user_id).contact_number}}</td>
+                  </tr>
+                  <tr>
+                    <th>Starts</th>
+                    <td>{{task.datetime_start}}</td>
+                  </tr>
+                  <tr>
+                    <th>Ends</th>
+                    <td>{{task.datetime_end}}</td>
+                  </tr>
+                  <tr>
+                    <th>Address</th>
+                    <td>{{task.address}}</td>
+                  </tr>
+                  <tr>
+                    <th>Minimum bid</th>
+                    <td>{{task.min_bid}}</td>
+                  </tr>
+                  <tr>
+                    <th>Last Updated Time</th>
+                    <td>{{task.last_updated}}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer" >
+              <button type="button" class="btn btn-default" data-dismiss="modal">Modify</button>
+              <button type="button" class="btn btn-default" data-dismiss="modal">Remove</button>
+              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  {% endfor %}
 
 </p>
 
