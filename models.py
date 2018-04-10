@@ -3,6 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import *
 
 from werkzeug.security import generate_password_hash, check_password_hash
+from flask_login import current_user
 import  datetime
 
 db = SQLAlchemy(app)
@@ -17,11 +18,12 @@ class Users(db.Model):
     contact_number = Column('contact_number', String)
     admin = Column('is_admin', BOOLEAN, default=False)
 
-    def __init__(self, u, p, a, c):
+    def __init__(self, u, p, a, c, d):
         self.user_id = u
         self.set_password(p)
         self.address = a
         self.contact_number = c
+        self.display_name = d
         self.admin = False
 
     def set_password(self, p):

@@ -21,7 +21,7 @@ app.config.from_object('config')
 #----------------------------------------------------------------------------#
 # DB
 #----------------------------------------------------------------------------#
-from models import db, Users, Tasks
+from models import db, Users, Tasks, Bids
 
 #----------------------------------------------------------------------------#
 # Login
@@ -87,6 +87,12 @@ def mytasks_employee():
     tasks_len = len(tasks)
     return render_template('pages/placeholder.mytasks.html', **locals())
 
+@login_required
+@app.route('/my_profile')
+def my_profile():
+    form = RegisterForm(request.form)
+    profile = Users.query.filter_by(user_id=current_user.get_id()).first()
+    return render_template('pages/placeholder.myprofile.html', **locals())
 
 @app.route('/login', methods=["GET","POST"])
 def login():
@@ -119,7 +125,7 @@ def register():
         if user:
             flash('User name is already taken. Try again')
             return render_template('forms/register.html', form=form)
-        user = Users(form.user_id.data, form.password_hash.data, form.address.data, form.contact_number.data)
+        user = Users(form.user_id.data, form.password_hash.data, form.address.data, form.contact_number.data, form.display_name.data)
         db.session.add(user)
         db.session.commit()
         flash('User successfully registered')

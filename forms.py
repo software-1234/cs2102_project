@@ -22,6 +22,9 @@ class RegisterForm(Form):
     contact_number = StringField(
         'Contact Number' , validators=[DataRequired(), Length(max=40)]
     )
+    display_name = StringField(
+        'Display Name' , validators=[DataRequired(), Length(max=40)]
+    )
 
 
 class LoginForm(Form):
