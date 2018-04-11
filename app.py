@@ -22,7 +22,7 @@ app.config.from_object('config')
 #----------------------------------------------------------------------------#
 # DB
 #----------------------------------------------------------------------------#
-from models import db, Users, Tasks, Bids
+from models import db, Users, Tasks, Bids, create_db, add_admin
 
 #----------------------------------------------------------------------------#
 # Login
@@ -57,7 +57,7 @@ def home():
     )
     next_url = None
     if tasks.has_next:
-        next_url = url_for('home', page=tasks.next_num) 
+        next_url = url_for('home', page=tasks.next_num)
     prev_url = None
     if tasks.has_prev:
         prev_url = url_for('home', page=tasks.prev_num)
@@ -65,7 +65,6 @@ def home():
     for task in tasks:
         bids = Bids.query.filter_by(task_id=task.task_id).order_by(Bids.status.desc()).all()
     return render_template('pages/placeholder.home.html', **locals())
-
 
 @app.route('/about')
 def about():
@@ -98,7 +97,6 @@ def delete(tid):
     else:
         return render_template('pages/placeholder.delete.html', tid=tid)
 
-
 @login_required
 @app.route('/<int:tid>/modify', methods=["GET","POST"])
 def modify(tid):
@@ -125,7 +123,7 @@ def mytasks_employer():
     )
     next_url = None
     if tasks.has_next:
-        next_url = url_for('mytasks_employer', page=tasks.next_num) 
+        next_url = url_for('mytasks_employer', page=tasks.next_num)
     prev_url = None
     if tasks.has_prev:
         prev_url = url_for('mytasks_employer', page=tasks.prev_num)
@@ -144,7 +142,7 @@ def mytasks_employee():
     )
     next_url = None
     if tasks.has_next:
-        next_url = url_for('mytasks_employee', page=tasks.next_num) 
+        next_url = url_for('mytasks_employee', page=tasks.next_num)
     prev_url = None
     if tasks.has_prev:
         prev_url = url_for('mytasks_employee', page=tasks.prev_num)
@@ -168,7 +166,7 @@ def search():
         )
         next_url = None
         if tasks.has_next:
-            next_url = url_for('search', page=tasks.next_num) 
+            next_url = url_for('search', page=tasks.next_num)
         prev_url = None
         if tasks.has_prev:
             prev_url = url_for('search', page=tasks.prev_num)
@@ -188,6 +186,7 @@ def my_profile():
 
 @app.route('/login', methods=["GET","POST"])
 def login():
+    print Users.query.filter_by(user_id="admin").first()
     form = LoginForm(request.form)
     if (request.method == "GET"):
         return render_template('forms/login.html', form = form)
@@ -262,7 +261,10 @@ if not app.debug:
 
 # Default port:
 if __name__ == '__main__':
+    create_db(drop_all=False)
+    add_admin()
     app.run()
+
 
 # Or specify port manually:
 '''

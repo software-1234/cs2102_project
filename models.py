@@ -103,4 +103,15 @@ class Bids(db.Model):
         return "<Bids(task_id='%s', user_id='%s')>" % (self.task_id, self.user_id)
 
 # Create tables.
-db.create_all()
+def create_db(drop_all):
+    if(drop_all):
+        db.drop_all()
+    db.create_all()
+
+# admin user
+def add_admin():
+    if Users.query.filter_by(admin=True).first() is None:
+        admin_user = Users("admin", "1", "1", "1", "admin")
+        admin_user.admin = True
+        db.session.add(admin_user)
+        db.session.commit()

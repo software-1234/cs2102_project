@@ -20,7 +20,7 @@ tr:nth-child(even) {
 </head>
 
 	<div class="page-header">
-		{% if g.user.is_authenticated %}
+		{% if g.user.is_authenticated() %}
 		<h1>All Tasks available</h1>
 	</div>
 	<p class="form">
@@ -117,7 +117,7 @@ tr:nth-child(even) {
 										</table>
 								</div>
 								<div class="modal-footer" >
-									{% if current_user.get_id() == task.employer_user_id %}
+              		{% if current_user.get_id() == task.employer_user_id or current_user.is_admin%}
 										<button type="button" class="btn btn-success" data-dismiss="modal">Modify</button>
 										<button type="button" class="btn btn-danger" data-dismiss="modal">Delete</button>
                   {% else %}
@@ -145,7 +145,7 @@ tr:nth-child(even) {
 			</ul>
 		</p>
 		{% endif %}
-		{% if not g.user.is_authenticated %}
+		{% if not g.user.is_authenticated() %}
 		<h1>Complete your tasks today!</h1>
 		<p>This is an app to help users hire temporary help to complete tasks.</p>
 		{% endif %}
