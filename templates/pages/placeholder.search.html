@@ -89,7 +89,7 @@ tr:nth-child(even) {
                   </tr>
                   <tr>
                     <th>Minimum bid</th>
-                    <td>{{task.min_bid}}</td>
+                    <td>${{task.min_bid}}</td>
                   </tr>
                   <tr>
                     <th>Last Updated Time</th>
@@ -106,19 +106,37 @@ tr:nth-child(even) {
                     <th>Comment</th>
                     <th>Status</th>
                   </tr>
-                  {% for bid in task.bids %}
-                    <tr>
-                      <td>{{current_user.get_user(bid.user_id).display_name}}</td>
-                      <td>{{bid.bid_amount}}</td>
-                      <td>{{bid.comment}}</td>
-                      <td>{{bid.status}}</td>
-                    </tr>
+                  {% for bid in bids %}
+                    {% if bid.task_id == task.task_id %}
+                      <tr>
+                        <td>{{current_user.get_user(bid.user_id).display_name}}</td>
+                        <td>{{bid.bid_amount}}</td>
+                        <td>{{bid.comment}}</td>
+                        <td>{{bid.status}}</td>
+                      </tr>
+                    {% endif %}
                   {% endfor %}
                 </table>
             </div>
             <div class="modal-footer" >
-              <button type="button" class="btn btn-success" data-dismiss="modal">Modify</button>
-              <button type="button" class="btn btn-danger" data-dismiss="modal">Remove</button>
+              {% if current_user.get_id() == task.employer_user_id or current_user.is_admin()%}
+                <a href="{{url_for('modify_task', tid=task.task_id )}}">
+                  <button type="button" class="btn btn-success" id="modify">
+                    <span aria-hidden="true"></span>Modify
+                  </button>
+                </a>
+                <a href="{{url_for('delete_task', tid=task.task_id )}}">
+                  <button type="button" class="btn btn-danger" id="delete">
+                    <span aria-hidden="true"></span>Delete
+                  </button>
+                </a>
+              {% else %}
+                <a href="{{url_for('add_bid', tid=task.task_id )}}">
+                  <button type="button" class="btn btn-primary" id="bid">
+                    <span aria-hidden="true"></span>Bid!
+                  </button>
+                </a>
+              {% endif %}
               <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
             </div>
           </div>
@@ -126,6 +144,7 @@ tr:nth-child(even) {
       </div>
     </div>
   {% endfor %}
+
   <ul class="pagination">
       {% if next_url %}
       <li class="page-item"><a class="page-link" href="{{ next_url }}">Older</a></li>

@@ -63,7 +63,9 @@ def home():
     if tasks.has_prev:
         prev_url = url_for('home', page=tasks.prev_num)
     tasks = tasks.items
-    bids = Bids.query.all()
+    bids = []
+    for task in tasks:
+        bids.extend(Bids.query.filter_by(task_id=task.task_id).order_by(Bids.status.desc()).all())
     return render_template('pages/placeholder.home.html', **locals())
 
 @app.route('/about')
@@ -71,8 +73,8 @@ def about():
     return render_template('pages/placeholder.about.html')
 
 @login_required
-@app.route('/add', methods=["GET","POST"])
-def add():
+@app.route('/add_task', methods=["GET","POST"])
+def add_task():
     form = AddForm(request.form)
     if(request.method == "POST"):
         if not (form.validate_on_submit()):
@@ -87,8 +89,8 @@ def add():
     return render_template('pages/placeholder.add.task.html', form=form)
 
 @login_required
-@app.route('/<int:tid>/delete', methods=["GET","POST"])
-def delete(tid):
+@app.route('/<int:tid>/delete_task', methods=["GET","POST"])
+def delete_task(tid):
     if (request.method == "POST"):
         Tasks.query.filter_by(task_id = tid).delete()
         db.session.commit()
@@ -98,8 +100,8 @@ def delete(tid):
         return render_template('pages/placeholder.delete.task.html')
 
 @login_required
-@app.route('/<int:tid>/modify', methods=["GET","POST"])
-def modify(tid):
+@app.route('/<int:tid>/modify_task', methods=["GET","POST"])
+def modify_task(tid):
     form = AddForm(request.form)
     task = Tasks.query.filter_by(task_id = tid).first()
     if(request.method == "POST"):
@@ -177,7 +179,9 @@ def mytasks_employer():
     if tasks.has_prev:
         prev_url = url_for('mytasks_employer', page=tasks.prev_num)
     tasks = tasks.items
-    bids = Bids.query.all()
+    bids = []
+    for task in tasks:
+        bids.extend(Bids.query.filter_by(task_id=task.task_id).order_by(Bids.status.desc()).all())
     return render_template('pages/placeholder.mytasks.employer.html', **locals())
 
 @login_required
@@ -194,7 +198,9 @@ def mytasks_employee():
     if tasks.has_prev:
         prev_url = url_for('mytasks_employee', page=tasks.prev_num)
     tasks = tasks.items
-    bids = Bids.query.all()
+    bids = []
+    for task in tasks:
+        bids.extend(Bids.query.filter_by(task_id=task.task_id).order_by(Bids.status.desc()).all())
     return render_template('pages/placeholder.mytasks.employee.html', **locals())
 
 @login_required
@@ -216,9 +222,9 @@ def search():
         if tasks.has_prev:
             prev_url = url_for('search', page=tasks.prev_num)
         tasks = tasks.items
+        bids = []
         for task in tasks:
-            bids = Bids.query.filter_by(task_id=task.task_id).order_by(Bids.status.desc()).all()
-        role = "employee"
+            bids.extend(Bids.query.filter_by(task_id=task.task_id).order_by(Bids.status.desc()).all())
         return render_template('pages/placeholder.search.html', **locals())
 
 
