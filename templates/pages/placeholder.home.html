@@ -121,7 +121,11 @@ tr:nth-child(even) {
 										<button type="button" class="btn btn-success" data-dismiss="modal">Modify</button>
 										<button type="button" class="btn btn-danger" data-dismiss="modal">Delete</button>
                   {% else %}
-                    <button type="button" class="btn btn-primary" data-dismiss="modal">Bid!</button>
+                    <a href="{{url_for('bid', tid=task.task_id )}}">
+                      <button type="button" class="btn btn-primary" id="bid">
+                        <span aria-hidden="true"></span>Bid!
+                      </button>
+                    </a>
                   {% endif %}
 									<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
 								</div>

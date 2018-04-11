@@ -116,6 +116,24 @@ def modify(tid):
         return render_template('pages/placeholder.modify.html', form=form, task=task)
 
 @login_required
+@app.route('/<int:tid>/bid', methods=["GET","POST"])
+def bid(tid):
+    task = Tasks.query.filter_by(task_id = tid).first()
+    form = BidForm(request.form)
+    if(request.method == "POST"):
+        if not (form.validate_on_submit()):
+            flash('Bid info is invalid. Try again')
+            return render_template('pages/placeholder.bid.html', form=form, task=task)
+        bid = Bids(task.task_id, current_user.get_id(), form.bid_amount.data, form.comment.data)
+        db.session.add(bid)
+        db.session.commit()
+        flash('Bid successfully!')
+        return redirect(request.args.get('next') or url_for('home'))
+    else:
+        return render_template('pages/placeholder.bid.html', form=form, task=task)
+
+
+@login_required
 @app.route('/mytasks_employer')
 def mytasks_employer():
     page = request.args.get('page', 1, type=int)
