@@ -64,7 +64,7 @@ def about():
 def add():
     form = AddForm(request.form)
     if(request.method == "POST"):
-        if (form.validate_on_submit()):
+        if not (form.validate_on_submit()):
             flash('Task info is invalid. Try again')
             return render_template('pages/placeholder.add.html', form=form)
         task = Tasks(form.datetime_start.data, form.datetime_end.data, form.address.data, form.title.data, form.description.data, form.min_bid.data, form.datetime_expire.data)
@@ -73,6 +73,35 @@ def add():
         flash('A task successfully added')
         return redirect(request.args.get('next') or url_for('home'))
     return render_template('pages/placeholder.add.html', form=form)
+
+@login_required
+@app.route('/<int:tid>/delete', methods=["GET","POST"])
+def delete(tid):
+    if (request.method == "POST"):
+        Tasks.query.filter_by(task_id = tid).delete()
+        db.session.commit()
+        flash('Task successfully deleted')
+        return redirect(url_for('home'))
+    else:
+        return render_template('pages/placeholder.delete.html', tid=tid)
+
+
+@login_required
+@app.route('/<int:tid>/modify', methods=["GET","POST"])
+def modify(tid):
+    if(request.method == "POST"):
+        form = AddForm(request.form)
+        if not (form.validate_on_submit()):
+            flash('Task info is invalid. Try again')
+            return render_template('pages/placeholder.modify.html', form=form, task=task)
+        Tasks.query.filter_by(task_id = tid).update({'title':form.title.data, 'description':form.description.data, 'datetime_start':form.datetime_start.data, 'datetime_end':form.datetime_end.data, 'address':form.address.data, 'min_bid':form.min_bid.data, 'datetime_expire':form.datetime_expire.data})
+        db.session.commit()
+        flash('A task successfully modified')
+        return redirect(request.args.get('next') or url_for('home'))
+    else:
+        form = AddForm(request.form)
+        task = Tasks.query.filter_by(task_id = tid).first()
+        return render_template('pages/placeholder.modify.html', form=form, task=task)
 
 @login_required
 @app.route('/mytasks_employer')
@@ -142,16 +171,6 @@ def forgot():
 def logout():
     logout_user()
     return redirect(url_for('home'))
-
-@app.route('/<int:tid>/ddelete/', methods=["GET","POST"])
-def delete(tid):
-    if (request.method == "POST"):
-        Tasks.query.filter_by(task_id = tid).delete()
-        db.session.commit()
-        flash('Task successfully deleted')
-        return redirect(url_for('home'))
-    else:
-        return render_template('pages/placeholder.delete.html', tid=tid)
 
 
 # Error handlers.

@@ -8,47 +8,44 @@ table {
     border-collapse: collapse;
     width: 100%;
 }
+
 td, th {
     border: 1px solid #dddddd;
     text-align: left;
     padding: 8px;
 }
+
 tr:nth-child(even) {
     background-color: #dddddd;
 }
 </style>
 </head>
 <div class="page-header">
-  {% if role == "employee" %}
-  <h1>My Tasks as an employee</h1>
-  {% endif %}
-  {% if role == "employer" %}
-  <h1>My Tasks as an employer</h1>
-  {% endif %}
+  <h1>Search results for: {{ search }}</h1>
 </div>
 <p class="form">
 	<table id = "t">
-	  <tr>
-      <th>Task</th>
-      <th>Employer</th>
-      <th>Description</th>
-	    <th>Starts</th>
-	    <th>Ends</th>
-			<th>Minimum Bid</th>
-	  </tr>
-		{% for task in tasks %}
-			<tr>
-				<td>
-          <a href="#{{task.task_id}}">
-          <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#{{task.task_id}}">{{task.title}}</button>
-        </td>
-        <td>{{current_user.get_user(task.employer_user_id).display_name}}</td>
-        <td>{{task.description}}</td>
-				<td>{{task.datetime_start}}</td>
-				<td>{{task.datetime_end}}</td>
-				<td>{{task.min_bid}}</td>
-      </tr>
-		{% endfor %}
+      <tr>
+          <th>Task</th>
+          <th>Employer</th>
+          <th>Description</th>
+          <th>Starts</th>
+          <th>Ends</th>
+          <th>Minimum Bid</th>
+        </tr>
+        {% for task in tasks %}
+          <tr>
+            <td>
+              <a href="#{{task.task_id}}">
+              <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#{{task.task_id}}">{{task.title}}</button>
+            </td>
+            <td>{{current_user.get_user(task.employer_user_id).display_name}}</td>
+            <td>{{task.description}}</td>
+            <td>{{task.datetime_start}}</td>
+            <td>{{task.datetime_end}}</td>
+            <td>{{task.min_bid}}</td>
+          </tr>
+        {% endfor %}
 	</table>
   {% for task in tasks %}
     <div class="container" >
@@ -102,17 +99,9 @@ tr:nth-child(even) {
               </table>
             </div>
             <div class="modal-footer" >
-              <a href="{{url_for('modify', tid=task.task_id )}}">
-                <button type="button" class="btn btn-success" id="modify">
-                  <span aria-hidden="true"></span>Modify
-                </button>
-              </a>
-              <a href="{{url_for('delete', tid=task.task_id )}}">
-                <button type="button" class="btn btn-success" id="delete">
-                  <span aria-hidden="true"></span>Delete
-                </button>
-              </a>
-              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-success" data-dismiss="modal">Modify</button>
+              <button type="button" class="btn btn-danger" data-dismiss="modal">Remove</button>
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
             </div>
           </div>
         </div>
