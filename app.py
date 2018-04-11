@@ -121,6 +121,29 @@ def mytasks_employee():
     return render_template('pages/placeholder.mytasks.html', **locals())
 
 @login_required
+@app.route('/search', methods=["POST"])
+def search():
+    if(request.method == "POST"):
+        search = request.form['search']
+        page = request.args.get('page', 1, type=int)
+        t1 = Tasks.query.filter(Tasks.title.ilike('%'+search+'%'))
+        t2 = Tasks.query.filter(Tasks.description.ilike('%'+search+'%'))
+        t3 = Tasks.query.filter(Tasks.address.ilike('%'+search+'%'))
+        tasks = t1.union(t2).union(t3).order_by(Tasks.last_updated.desc()).paginate(
+            page, 20, False
+        )
+        next_url = None
+        if tasks.has_next:
+            next_url = url_for('search', page=tasks.next_num) 
+        prev_url = None
+        if tasks.has_prev:
+            prev_url = url_for('search', page=tasks.prev_num)
+        tasks = tasks.items
+        role = "employee"
+        return render_template('pages/placeholder.search.html', **locals())
+
+
+@login_required
 @app.route('/my_profile')
 def my_profile():
     form = RegisterForm(request.form)
