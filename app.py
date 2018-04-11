@@ -35,7 +35,6 @@ login_manager.login_view = 'login'
 def load_user(user_id):
     return Users.query.get(user_id)
 
-
 # Automatically tear down SQLAlchemy.
 '''
 @app.teardown_request
@@ -65,7 +64,7 @@ def about():
 def add():
     form = AddForm(request.form)
     if(request.method == "POST"):
-        if not (form.validate_on_submit()):
+        if (form.validate_on_submit()):
             flash('Task info is invalid. Try again')
             return render_template('pages/placeholder.add.html', form=form)
         task = Tasks(form.datetime_start.data, form.datetime_end.data, form.address.data, form.title.data, form.description.data, form.min_bid.data, form.datetime_expire.data)
@@ -143,6 +142,17 @@ def forgot():
 def logout():
     logout_user()
     return redirect(url_for('home'))
+
+@app.route('/<int:tid>/ddelete/', methods=["GET","POST"])
+def delete(tid):
+    if (request.method == "POST"):
+        Tasks.query.filter_by(task_id = tid).delete()
+        db.session.commit()
+        flash('Task successfully deleted')
+        return redirect(url_for('home'))
+    else:
+        return render_template('pages/placeholder.delete.html', tid=tid)
+
 
 # Error handlers.
 @app.errorhandler(500)

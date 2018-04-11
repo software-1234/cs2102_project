@@ -20,7 +20,7 @@ tr:nth-child(even) {
 </head>
 
 	<div class="page-header">
-		{% if g.user.is_authenticated %}
+		{% if g.user.is_authenticated() %}
 		<h1>Get your tasks! </h1>
 		<p class="form">
 			<table id = "t">
@@ -42,10 +42,69 @@ tr:nth-child(even) {
 					</tr>
 				{% endfor %}
 			</table>
-
+      {% for task in tasks %}
+        <div class="container" >
+        <!-- Modal -->
+          <div class="modal fade" role="dialog" id="{{task.task_id}}">
+            <div class="modal-dialog">
+              <!-- Modal content-->
+              <div class="modal-content" >
+                <div class="modal-header" >
+                  <button type="button" class="close" data-dismiss="modal" >&times;</button>
+                  <h4 class="modal-title">{{task.title}}</h4>
+                </div>
+                <div class="modal-body" >
+                  <table>
+                    <thead>
+                    </thead>
+                    <tbody class="modal-table" aria-hidden="true">
+                      <tr>
+                        <th>Description</th>
+                        <td>{{task.description}}</td>
+                      </tr>
+                      <tr>
+                        <th>Employer</th>
+                        <td>{{1}}</td>
+                      </tr>
+                      <tr>
+                        <th>Contact number</th>
+                        <td>{{1}}</td>
+                      </tr>
+                      <tr>
+                        <th>Starts</th>
+                        <td>{{task.datetime_start}}</td>
+                      </tr>
+                      <tr>
+                        <th>Ends</th>
+                        <td>{{task.datetime_end}}</td>
+                      </tr>
+                      <tr>
+                        <th>Address</th>
+                        <td>{{task.address}}</td>
+                      </tr>
+                      <tr>
+                        <th>Minimum bid</th>
+                        <td>{{task.min_bid}}</td>
+                      </tr>
+                      <tr>
+                        <th>Last Updated Time</th>
+                        <td>{{task.last_updated}}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div class="modal-footer" >
+                  <button type="button" class="btn btn-default" data-dismiss="modal">Bid!</button>
+                  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
 		</p>
 		{% endif %}
-		{% if not g.user.is_authenticated %}
+		{% if not g.user.is_authenticated() %}
 		<h1>Complete your tasks today!</h1>
 		<p>This is an app to help users hire temporary help to complete tasks.</p>
 		{% endif %}

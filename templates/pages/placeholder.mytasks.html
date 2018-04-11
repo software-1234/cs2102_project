@@ -27,7 +27,7 @@ tr:nth-child(even) {
   {% if role == "employer" %}
   <h1>My Tasks as an employer</h1>
   {% endif %}
-</div>
+
 <p class="form">
 	<table id = "t">
 	  <tr>
@@ -70,11 +70,11 @@ tr:nth-child(even) {
                   </tr>
                   <tr>
                     <th>Employer</th>
-                    <td>{{current_user.get_user(task.employer_user_id).display_name}}</td>
+                    <td>{{1}}</td>
                   </tr>
                   <tr>
                     <th>Contact number</th>
-                    <td>{{current_user.get_user(task.employer_user_id).contact_number}}</td>
+                    <td>{{1}}</td>
                   </tr>
                   <tr>
                     <th>Starts</th>
@@ -101,7 +101,11 @@ tr:nth-child(even) {
             </div>
             <div class="modal-footer" >
               <button type="button" class="btn btn-default" data-dismiss="modal">Modify</button>
-              <button type="button" class="btn btn-default" data-dismiss="modal">Remove</button>
+              <a href="{{url_for('delete', tid=task.task_id)}}">
+                <button class="btn btn-default delete" id="delete">
+                  <span aria-hidden="true"></span>Delete
+                </button>
+              </a>
               <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
             </div>
           </div>
@@ -111,5 +115,5 @@ tr:nth-child(even) {
   {% endfor %}
 
 </p>
-
+</div>
 {% endblock %}
