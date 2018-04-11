@@ -118,8 +118,16 @@ tr:nth-child(even) {
 								</div>
 								<div class="modal-footer" >
               		{% if current_user.get_id() == task.employer_user_id or current_user.is_admin()%}
-										<button type="button" class="btn btn-success" data-dismiss="modal">Modify</button>
-										<button type="button" class="btn btn-danger" data-dismiss="modal">Delete</button>
+                    <a href="{{url_for('modify', tid=task.task_id )}}">
+                      <button type="button" class="btn btn-success" id="modify">
+                        <span aria-hidden="true"></span>Modify
+                      </button>
+                    </a>
+                    <a href="{{url_for('delete', tid=task.task_id )}}">
+                      <button type="button" class="btn btn-danger" id="delete">
+                        <span aria-hidden="true"></span>Delete
+                      </button>
+                    </a>
                   {% else %}
                     <a href="{{url_for('bid', tid=task.task_id )}}">
                       <button type="button" class="btn btn-primary" id="bid">
