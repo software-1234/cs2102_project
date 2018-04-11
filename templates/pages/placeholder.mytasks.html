@@ -20,10 +20,10 @@ tr:nth-child(even) {
 </head>
 <div class="page-header">
   {% if role == "employee" %}
-  <h1>My Tasks as an employee</h1>
+  <h1>My Tasks as an Employee</h1>
   {% endif %}
   {% if role == "employer" %}
-  <h1>My Tasks as an employer</h1>
+  <h1>My Tasks as an Employer</h1>
   {% endif %}
 </div>
 <p class="form">
@@ -100,6 +100,24 @@ tr:nth-child(even) {
                   </tr>
                 </tbody>
               </table>
+              <br>
+              <h4 class="modal-title">Bids</h4>
+              <table id = "t">
+                  <tr>
+                    <th>User</th>
+                    <th>Bid Amount</th>
+                    <th>Comment</th>
+                    <th>Status</th>
+                  </tr>
+                  {% for bid in task.bids %}
+                    <tr>
+                      <td>{{current_user.get_user(bid.user_id).display_name}}</td>
+                      <td>{{bid.bid_amount}}</td>
+                      <td>{{bid.comment}}</td>
+                      <td>{{bid.status}}</td>
+                    </tr>
+                  {% endfor %}
+                </table>
             </div>
             <div class="modal-footer" >
               <a href="{{url_for('modify', tid=task.task_id )}}">
@@ -108,7 +126,7 @@ tr:nth-child(even) {
                 </button>
               </a>
               <a href="{{url_for('delete', tid=task.task_id )}}">
-                <button type="button" class="btn btn-success" id="delete">
+                <button type="button" class="btn btn-danger" id="delete">
                   <span aria-hidden="true"></span>Delete
                 </button>
               </a>

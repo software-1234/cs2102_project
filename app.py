@@ -51,7 +51,19 @@ def before_request():
 
 @app.route('/')
 def home():
-    tasks = Tasks.query.order_by(Tasks.last_updated.desc()).all()
+    page = request.args.get('page', 1, type=int)
+    tasks = Tasks.query.order_by(Tasks.last_updated.desc()).paginate(
+        page, 20, False
+    )
+    next_url = None
+    if tasks.has_next:
+        next_url = url_for('home', page=tasks.next_num) 
+    prev_url = None
+    if tasks.has_prev:
+        prev_url = url_for('home', page=tasks.prev_num)
+    tasks = tasks.items
+    for task in tasks:
+        bids = Bids.query.filter_by(task_id=task.task_id).order_by(Bids.status.desc()).all()
     return render_template('pages/placeholder.home.html', **locals())
 
 
@@ -65,6 +77,7 @@ def add():
     form = AddForm(request.form)
     if(request.method == "POST"):
         if not (form.validate_on_submit()):
+            print(form.errors)
             flash('Task info is invalid. Try again')
             return render_template('pages/placeholder.add.html', form=form)
         task = Tasks(form.datetime_start.data, form.datetime_end.data, form.address.data, form.title.data, form.description.data, form.min_bid.data, form.datetime_expire.data)
@@ -106,16 +119,65 @@ def modify(tid):
 @login_required
 @app.route('/mytasks_employer')
 def mytasks_employer():
-    tasks = Tasks.query.filter_by(employer_user_id=current_user.get_id()).all()
+    page = request.args.get('page', 1, type=int)
+    tasks = Tasks.query.filter_by(employer_user_id=current_user.get_id()).order_by(Tasks.last_updated.desc()).paginate(
+        page, 20, False
+    )
+    next_url = None
+    if tasks.has_next:
+        next_url = url_for('mytasks_employer', page=tasks.next_num) 
+    prev_url = None
+    if tasks.has_prev:
+        prev_url = url_for('mytasks_employer', page=tasks.prev_num)
+    tasks = tasks.items
+    for task in tasks:
+        bids = Bids.query.filter_by(task_id=task.task_id).order_by(Bids.status.desc()).all()
     role = "employer"
     return render_template('pages/placeholder.mytasks.html', **locals())
 
 @login_required
 @app.route('/mytasks_employee')
 def mytasks_employee():
-    tasks = Tasks.query.filter_by(employee_user_id=current_user.get_id()).all()
+    page = request.args.get('page', 1, type=int)
+    tasks = Tasks.query.filter_by(employee_user_id=current_user.get_id()).order_by(Tasks.last_updated.desc()).paginate(
+        page, 20, False
+    )
+    next_url = None
+    if tasks.has_next:
+        next_url = url_for('mytasks_employee', page=tasks.next_num) 
+    prev_url = None
+    if tasks.has_prev:
+        prev_url = url_for('mytasks_employee', page=tasks.prev_num)
+    tasks = tasks.items
+    for task in tasks:
+        bids = Bids.query.filter_by(task_id=task.task_id).order_by(Bids.status.desc()).all()
     role = "employee"
     return render_template('pages/placeholder.mytasks.html', **locals())
+
+@login_required
+@app.route('/search', methods=["POST"])
+def search():
+    if(request.method == "POST"):
+        search = request.form['search']
+        page = request.args.get('page', 1, type=int)
+        t1 = Tasks.query.filter(Tasks.title.ilike('%'+search+'%'))
+        t2 = Tasks.query.filter(Tasks.description.ilike('%'+search+'%'))
+        t3 = Tasks.query.filter(Tasks.address.ilike('%'+search+'%'))
+        tasks = t1.union(t2).union(t3).order_by(Tasks.last_updated.desc()).paginate(
+            page, 20, False
+        )
+        next_url = None
+        if tasks.has_next:
+            next_url = url_for('search', page=tasks.next_num) 
+        prev_url = None
+        if tasks.has_prev:
+            prev_url = url_for('search', page=tasks.prev_num)
+        tasks = tasks.items
+        for task in tasks:
+            bids = Bids.query.filter_by(task_id=task.task_id).order_by(Bids.status.desc()).all()
+        role = "employee"
+        return render_template('pages/placeholder.search.html', **locals())
+
 
 @login_required
 @app.route('/my_profile')
