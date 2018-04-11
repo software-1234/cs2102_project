@@ -95,7 +95,7 @@ def delete(tid):
         flash('Task successfully deleted')
         return redirect(url_for('home'))
     else:
-        return render_template('pages/placeholder.delete.html')
+        return render_template('pages/placeholder.delete.task.html')
 
 @login_required
 @app.route('/<int:tid>/modify', methods=["GET","POST"])
@@ -105,13 +105,13 @@ def modify(tid):
     if(request.method == "POST"):
         if not (form.validate_on_submit()):
             flash('Task info is invalid. Try again')
-            return render_template('pages/placeholder.modify.html', form=form, task=task)
+            return render_template('pages/placeholder.modify.task.html', form=form, task=task)
         Tasks.query.filter_by(task_id = tid).update({'title':form.title.data, 'description':form.description.data, 'datetime_start':form.datetime_start.data, 'datetime_end':form.datetime_end.data, 'address':form.address.data, 'min_bid':form.min_bid.data, 'datetime_expire':form.datetime_expire.data})
         db.session.commit()
         flash('A task successfully modified')
         return redirect(request.args.get('next') or url_for('home'))
     else:
-        return render_template('pages/placeholder.modify.html', form=form, task=task)
+        return render_template('pages/placeholder.modify.task.html', form=form, task=task)
 
 @login_required
 @app.route('/<int:tid>/add_bid', methods=["GET","POST"])
