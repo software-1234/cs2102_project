@@ -52,7 +52,7 @@
         </div>
         <div class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
-            {% if g.user.is_authenticated or (current_user.is_admin() == False) %}
+            {% if g.user.is_authenticated() or (current_user.is_admin() == False) %}
               <li {% if request.endpoint == 'add' %} class="active" {% endif %}><a href="{{ url_for('add') }}">Add a Task</a></li>
                 <li class="dropdown">
                   <a class="dropdown-toggle" data-toggle="dropdown">My Tasks <b class="caret"></b></a>
@@ -69,7 +69,7 @@
             {% endif %}
           </ul>
           <ul class="nav navbar-nav pull-right">
-            {% if g.user.is_authenticated %}
+            {% if g.user.is_authenticated() %}
             </li>
               <li {% if request.endpoint == 'my_profile' %} class="active" {% endif %}><a href="{{ url_for('my_profile') }}">My Profile</a></li>
               <li><a href="{{ url_for('logout') }}">Logout</a></li>

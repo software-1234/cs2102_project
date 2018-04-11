@@ -29,110 +29,122 @@ tr:nth-child(even) {
       <th>Description</th>
 	    <th>Starts</th>
 	    <th>Ends</th>
-			<th>Minimum Bid</th>
+			<th>My Bid</th>
+      <th>Status</th>
 	  </tr>
-		{% for task in tasks %}
-			<tr>
-				<td>
-          <a href="#{{task.task_id}}">
-          <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#{{task.task_id}}">{{task.title}}</button>
-        </td>
-        <td>{{current_user.get_user(task.employer_user_id).display_name}}</td>
-        <td>{{task.description}}</td>
-				<td>{{task.datetime_start}}</td>
-				<td>{{task.datetime_end}}</td>
-				<td>${{task.min_bid}}</td>
-      </tr>
+		{% for bid in bids %}
+      {% if bid.user_id == current_user.get_id() %}
+  			<tr>
+          {% for task in tasks %}
+            {% if bid.task_id == task.task_id %}
+      				<td>
+                <a href="#{{bid.bid_id}}">
+                <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#{{bid.bid_id}}">{{task.title}}</button>
+              </td>
+              <td>{{current_user.get_user(task.employer_user_id).display_name}}</td>
+              <td>{{task.description}}</td>
+      				<td>{{task.datetime_start}}</td>
+      				<td>{{task.datetime_end}}</td>
+            {% endif %}
+          {% endfor %}
+  				<td>${{bid.bid_amount}}</td>
+          <td>{{bid.status}}</td>
+        </tr>
+      {% endif %}
 		{% endfor %}
 	</table>
-  {% for task in tasks %}
-    <div class="container" >
-    <!-- Modal -->
-      <div class="modal fade" role="dialog" id="{{task.task_id}}">
-        <div class="modal-dialog">
-          <!-- Modal content-->
-          <div class="modal-content" >
-            <div class="modal-header" >
-              <button type="button" class="close" data-dismiss="modal" >&times;</button>
-              <h4 class="modal-title">{{task.title}}</h4>
-            </div>
+  {% for bid in bids %}
+    {% for task2 in tasks %}
+      {% if bid.task_id == task2.task_id %}
+      <div class="container" >
+        <!-- Modal -->
+        <div class="modal fade" role="dialog" id="{{bid.bid_id}}">
+          <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content" >
+              <div class="modal-header" >
+                <button type="button" class="close" data-dismiss="modal" >&times;</button>
+                  <h4 class="modal-title">{{task2.title}}</h4>
+              </div>
             <div class="modal-body" >
               <table>
                 <thead>
                 </thead>
-                <tbody class="modal-table" aria-hidden="true">
-                  <tr>
-                    <th>Description</th>
-                    <td>{{task.description}}</td>
-                  </tr>
-                  <tr>
-                    <th>Employer</th>
-                    <td>{{current_user.get_user(task.employer_user_id).display_name}}</td>
-                  </tr>
-                  <tr>
-                    <th>Contact number</th>
-                    <td>{{current_user.get_user(task.employer_user_id).contact_number}}</td>
-                  </tr>
-                  <tr>
-                    <th>Starts</th>
-                    <td>{{task.datetime_start}}</td>
-                  </tr>
-                  <tr>
-                    <th>Ends</th>
-                    <td>{{task.datetime_end}}</td>
-                  </tr>
-                  <tr>
-                    <th>Address</th>
-                    <td>{{task.address}}</td>
-                  </tr>
-                  <tr>
-                    <th>Minimum Bid</th>
-                    <td>${{task.min_bid}}</td>
-                  </tr>
-                  <tr>
-                    <th>Last Updated Time</th>
-                    <td>{{task.last_updated}}</td>
-                  </tr>
-                </tbody>
-              </table>
-              <br>
+              <tbody class="modal-table" aria-hidden="true">
+                <tr>
+                  <th>Description</th>
+                  <td>{{task2.description}}</td>
+                </tr>
+                <tr>
+                  <th>Employer</th>
+                  <td>{{current_user.get_user(task2.employer_user_id).display_name}}</td>
+                </tr>
+                <tr>
+                  <th>Contact number</th>
+                  <td>{{current_user.get_user(task2.employer_user_id).contact_number}}</td>
+                </tr>
+                <tr>
+                  <th>Starts</th>
+                  <td>{{task2.datetime_start}}</td>
+                </tr>
+                <tr>
+                  <th>Ends</th>
+                  <td>{{task2.datetime_end}}</td>
+                </tr>
+                <tr>
+                  <th>Address</th>
+                  <td>{{task2.address}}</td>
+                </tr>
+                <tr>
+                  <th>Minimum Bid</th>
+                  <td>${{task2.min_bid}}</td>
+                </tr>
+                <tr>
+                  <th>Last Updated Time</th>
+                  <td>{{task2.last_updated}}</td>
+                </tr>
+              </tbody>
+            </table>
+            <br>
               <h4 class="modal-title">Bids</h4>
-              <table id = "t">
+                <table id = "t">
                   <tr>
                     <th>User</th>
                     <th>Bid Amount</th>
                     <th>Comment</th>
                     <th>Status</th>
                   </tr>
-                  {% for bid in bids %}
-                    {% if bid.task_id == task.task_id %}
+                  {% for bid2 in bids %}
+                    {% if bid2.task_id == task2.task_id %}
                       <tr>
-                        <td>{{current_user.get_user(bid.user_id).display_name}}</td>
-                        <td>{{bid.bid_amount}}</td>
-                        <td>{{bid.comment}}</td>
-                        <td>{{bid.status}}</td>
+                        <td>{{current_user.get_user(bid2.user_id).display_name}}</td>
+                        <td>{{bid2.bid_amount}}</td>
+                        <td>{{bid2.comment}}</td>
+                        <td>{{bid2.status}}</td>
                       </tr>
                     {% endif %}
                   {% endfor %}
                 </table>
             </div>
             <div class="modal-footer" >
-              <a href="{{url_for('modify', tid=task.task_id )}}">
-                <button type="button" class="btn btn-success" id="modify">
-                  <span aria-hidden="true"></span>Modify
+              <a href="{{url_for('update_bid', bid_id=bid.bid_id )}}">
+                <button type="button" class="btn btn-success" id="update bid">
+                  <span aria-hidden="true"></span>Update my bid
                 </button>
               </a>
-              <a href="{{url_for('delete', tid=task.task_id )}}">
-                <button type="button" class="btn btn-danger" id="delete">
-                  <span aria-hidden="true"></span>Delete
+              <a href="{{url_for('delete_bid', bid_id=bid.bid_id )}}">
+                <button type="button" class="btn btn-danger" id="delete bid">
+                  <span aria-hidden="true"></span>Delete my bid
                 </button>
               </a>
               <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
             </div>
-          </div>
-        </div>
       </div>
     </div>
+  </div>
+  </div>
+      {% endif %}
+    {% endfor %}
   {% endfor %}
   <ul class="pagination">
       {% if next_url %}

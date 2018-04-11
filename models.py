@@ -1,10 +1,11 @@
 from __main__ import app
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import *
+from sqlalchemy.orm import column_property
 
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import current_user, AnonymousUserMixin
-import  datetime
+import datetime
 
 db = SQLAlchemy(app)
 
@@ -99,12 +100,14 @@ class Tasks(db.Model):
 
 class Bids(db.Model):
     __tablename__ = 'bids'
+    bid_id = Column('bid_id', Integer, primary_key=True, autoincrement=True)
     task_id = Column('task_id', Integer, ForeignKey("tasks.task_id"), primary_key=True, nullable=False)
     user_id = Column('user_id', String, ForeignKey("users.user_id"), primary_key=True, nullable=False)
     last_updated = Column('last_updated', DateTime, default=datetime.datetime.now , onupdate=datetime.datetime.now)
     bid_amount = Column('bid_amount', Numeric, default=0.00)
     status = Column('status', BOOLEAN, default=False)
     comment = Column('comment', String)
+    UniqueConstraint('task_id', 'user_id')
 
     def __init__(self, ti, ui, ba, co):
         self.task_id = ti
@@ -113,7 +116,7 @@ class Bids(db.Model):
         self.comment = co
 
     def __repr__(self):
-        return "<Bids(task_id='%s', user_id='%s')>" % (self.task_id, self.user_id)
+        return "<Bids(bid_id='%s', task_id='%s', user_id='%s')>" % (self.bid_id, self.task_id, self.user_id)
 
 # Create tables.
 def create_db(drop_all):

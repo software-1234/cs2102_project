@@ -78,13 +78,13 @@ def add():
         if not (form.validate_on_submit()):
             print(form.errors)
             flash('Task info is invalid. Try again')
-            return render_template('pages/placeholder.add.html', form=form)
+            return render_template('pages/placeholder.add.task.html', form=form)
         task = Tasks(form.datetime_start.data, form.datetime_end.data, form.address.data, form.title.data, form.description.data, form.min_bid.data, form.datetime_expire.data)
         db.session.add(task)
         db.session.commit()
         flash('A task successfully added')
         return redirect(request.args.get('next') or url_for('home'))
-    return render_template('pages/placeholder.add.html', form=form)
+    return render_template('pages/placeholder.add.task.html', form=form)
 
 @login_required
 @app.route('/<int:tid>/delete', methods=["GET","POST"])
@@ -95,13 +95,14 @@ def delete(tid):
         flash('Task successfully deleted')
         return redirect(url_for('home'))
     else:
-        return render_template('pages/placeholder.delete.html', tid=tid)
+        return render_template('pages/placeholder.delete.html')
 
 @login_required
 @app.route('/<int:tid>/modify', methods=["GET","POST"])
 def modify(tid):
+    form = AddForm(request.form)
+    task = Tasks.query.filter_by(task_id = tid).first()
     if(request.method == "POST"):
-        form = AddForm(request.form)
         if not (form.validate_on_submit()):
             flash('Task info is invalid. Try again')
             return render_template('pages/placeholder.modify.html', form=form, task=task)
@@ -110,26 +111,56 @@ def modify(tid):
         flash('A task successfully modified')
         return redirect(request.args.get('next') or url_for('home'))
     else:
-        form = AddForm(request.form)
-        task = Tasks.query.filter_by(task_id = tid).first()
         return render_template('pages/placeholder.modify.html', form=form, task=task)
 
 @login_required
-@app.route('/<int:tid>/bid', methods=["GET","POST"])
-def bid(tid):
-    task = Tasks.query.filter_by(task_id = tid).first()
+@app.route('/<int:tid>/add_bid', methods=["GET","POST"])
+def add_bid(tid):
     form = BidForm(request.form)
+    task = Tasks.query.filter_by(task_id = tid).first()
     if(request.method == "POST"):
         if not (form.validate_on_submit()):
             flash('Bid info is invalid. Try again')
-            return render_template('pages/placeholder.bid.html', form=form, task=task)
-        bid = Bids(task.task_id, current_user.get_id(), form.bid_amount.data, form.comment.data)
-        db.session.add(bid)
+            return render_template('pages/placeholder.add.bid.html', form=form, task=task)
+        # SQL : DUPLICATE KEY UPDATE
+        if Bids.query.filter_by(task_id = tid, user_id = current_user.get_id()).first() is None:
+            bid = Bids(task.task_id, current_user.get_id(), form.bid_amount.data, form.comment.data)
+            db.session.add(bid)
+        else:
+            Bids.query.filter_by(task_id = tid, user_id = current_user.get_id()).update({'bid_amount':form.bid_amount.data, 'comment':form.comment.data})
         db.session.commit()
         flash('Bid successfully!')
         return redirect(request.args.get('next') or url_for('home'))
     else:
-        return render_template('pages/placeholder.bid.html', form=form, task=task)
+        return render_template('pages/placeholder.add.bid.html', form=form, task=task)
+
+@login_required
+@app.route('/<int:bid_id>/delete/bid', methods=["GET","POST"])
+def delete_bid(bid_id):
+    if (request.method == "POST"):
+        Bids.query.filter_by(bid_id = bid_id).delete()
+        db.session.commit()
+        flash('Bid successfully deleted')
+        return redirect(url_for('home'))
+    else:
+        return render_template('pages/placeholder.delete.bid.html')
+
+@login_required
+@app.route('/<int:bid_id>/update/bid', methods=["GET","POST"])
+def update_bid(bid_id):
+    form = BidForm(request.form)
+    bid = Bids.query.filter_by(bid_id = bid_id).first()
+    min_bid = Tasks.query.filter_by(task_id = bid.task_id).first().min_bid
+    if(request.method == "POST"):
+        if not (form.validate_on_submit()):
+            flash('Bid info is invalid. Try again')
+            return render_template('pages/placeholder.update.bid.html', form=form, bid=bid)
+        Bids.query.filter_by(bid_id=bid_id).update({'bid_amount':form.bid_amount.data, 'comment':form.comment.data})
+        db.session.commit()
+        flash('A bid successfully modified')
+        return redirect(request.args.get('next') or url_for('home'))
+    else:
+        return render_template('pages/placeholder.update.bid.html', **locals())
 
 
 @login_required
@@ -146,15 +177,14 @@ def mytasks_employer():
     if tasks.has_prev:
         prev_url = url_for('mytasks_employer', page=tasks.prev_num)
     tasks = tasks.items
-    for task in tasks:
-        bids = Bids.query.filter_by(task_id=task.task_id).order_by(Bids.status.desc()).all()
+    bids = Bids.query.all()
     return render_template('pages/placeholder.mytasks.employer.html', **locals())
 
 @login_required
 @app.route('/mytasks_employee')
 def mytasks_employee():
     page = request.args.get('page', 1, type=int)
-    tasks = Tasks.query.filter_by(employee_user_id=current_user.get_id()).order_by(Tasks.last_updated.desc()).paginate(
+    tasks = Tasks.query.order_by(Tasks.last_updated.desc()).paginate(
         page, 20, False
     )
     next_url = None
@@ -164,8 +194,7 @@ def mytasks_employee():
     if tasks.has_prev:
         prev_url = url_for('mytasks_employee', page=tasks.prev_num)
     tasks = tasks.items
-    for task in tasks:
-        bids = Bids.query.filter_by(task_id=task.task_id).order_by(Bids.status.desc()).all()
+    bids = Bids.query.all()
     return render_template('pages/placeholder.mytasks.employee.html', **locals())
 
 @login_required

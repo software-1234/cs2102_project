@@ -1,0 +1,13 @@
+{% extends 'layouts/main.html' %}
+{% block title %}Update bid{% endblock %}
+{% block content %}
+  <form method="post" class="form">
+    <h3 class="form-heading">Update a Bid <a href="{{ url_for('home') }}" title="Back to homepage"><i class="fa fa-home pull-right"></i></a></h3>
+    {{ form.hidden_tag() }}
+    <label for="Bid Amount">Bid Amount</label>
+    {{ form.bid_amount(class_ = 'form-control first-input', value = bid.bid_amount, placeholder = form.bid_amount.label.text, required = true, min = min_bid, autofocus = true) }}
+    <label for="Comment">Description</label>
+    {{ form.comment(class_ = 'form-control first-input', value = bid.comment, placeholder = form.comment.label.text) }}
+    <input type="submit" value="Submit" class="btn btn-primary btn-lg btn-block">
+  </form>
+{% endblock %}

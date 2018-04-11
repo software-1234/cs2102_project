@@ -20,7 +20,7 @@ tr:nth-child(even) {
 </head>
 
 	<div class="page-header">
-		{% if g.user.is_authenticated %}
+		{% if g.user.is_authenticated() %}
 		<h1>All Tasks available</h1>
 	</div>
 	<p class="form">
@@ -131,7 +131,7 @@ tr:nth-child(even) {
                       </button>
                     </a>
                   {% else %}
-                    <a href="{{url_for('bid', tid=task.task_id )}}">
+                    <a href="{{url_for('add_bid', tid=task.task_id )}}">
                       <button type="button" class="btn btn-primary" id="bid">
                         <span aria-hidden="true"></span>Bid!
                       </button>
