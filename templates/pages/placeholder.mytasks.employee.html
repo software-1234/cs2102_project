@@ -118,7 +118,7 @@ tr:nth-child(even) {
                     {% if bid2.task_id == task2.task_id %}
                       <tr>
                         <td>{{current_user.get_user(bid2.user_id).display_name}}</td>
-                        <td>{{bid2.bid_amount}}</td>
+                        <td>${{bid2.bid_amount}}</td>
                         <td>{{bid2.comment}}</td>
                         <td>{{bid2.status}}</td>
                       </tr>

@@ -105,17 +105,21 @@ tr:nth-child(even) {
                     <th>Bid Amount</th>
                     <th>Comment</th>
                     <th>Status</th>
+                    <th>Pick!</th>
                   </tr>
-                  {% for bid in bids %}
-                    {% if bid.task_id == task.task_id %}
-                      <tr>
-                        <td>{{current_user.get_user(bid.user_id).display_name}}</td>
-                        <td>{{bid.bid_amount}}</td>
-                        <td>{{bid.comment}}</td>
-                        <td>{{bid.status}}</td>
-                      </tr>
-                    {% endif %}
-                  {% endfor %}
+                  <form action="">
+                    {% for bid in bids %}
+                      {% if bid.task_id == task.task_id %}
+                        <tr>
+                          <td>{{current_user.get_user(bid.user_id).display_name}}</td>
+                          <td>${{bid.bid_amount}}</td>
+                          <td>{{bid.comment}}</td>
+                          <td>{{bid.status}}</td>
+                          <td><button type="button" class="btn btn-primary btn-sm">Pick</button></td>
+                        </tr>
+                      {% endif %}
+                    {% endfor %}
+                  </form>
                 </table>
             </div>
             <div class="modal-footer" >

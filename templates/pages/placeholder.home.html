@@ -20,7 +20,7 @@ tr:nth-child(even) {
 </head>
 
 	<div class="page-header">
-		{% if g.user.is_authenticated() %}
+		{% if g.user.is_authenticated %}
 		<h1>All Tasks available</h1>
 	</div>
 	<p class="form">
@@ -105,6 +105,9 @@ tr:nth-child(even) {
 												<th>Bid Amount</th>
 												<th>Comment</th>
 												<th>Status</th>
+                        {% if current_user.get_id() == task.employer_user_id %}
+                          <th>Pick!</th>
+                        {% endif %}
 											</tr>
 											{% for bid in bids %}
                         {% if bid.task_id == task.task_id %}
@@ -113,6 +116,9 @@ tr:nth-child(even) {
   													<td>{{bid.bid_amount}}</td>
   													<td>{{bid.comment}}</td>
   													<td>{{bid.status}}</td>
+                            {% if current_user.get_id() == task.employer_user_id %}
+                              <td><button type="button" class="btn btn-primary btn-sm">Pick</button></td>
+                            {% endif %}
   												</tr>
                         {% endif %}
 											{% endfor %}

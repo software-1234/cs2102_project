@@ -105,14 +105,20 @@ tr:nth-child(even) {
                     <th>Bid Amount</th>
                     <th>Comment</th>
                     <th>Status</th>
+                    {% if current_user.get_id() == task.employer_user_id %}
+                      <th>Pick!</th>
+                    {% endif %}
                   </tr>
                   {% for bid in bids %}
                     {% if bid.task_id == task.task_id %}
                       <tr>
                         <td>{{current_user.get_user(bid.user_id).display_name}}</td>
-                        <td>{{bid.bid_amount}}</td>
+                        <td>${{bid.bid_amount}}</td>
                         <td>{{bid.comment}}</td>
                         <td>{{bid.status}}</td>
+                        {% if current_user.get_id() == task.employer_user_id %}
+                          <td><button type="button" class="btn btn-primary btn-sm">Pick</button></td>
+                        {% endif %}
                       </tr>
                     {% endif %}
                   {% endfor %}
