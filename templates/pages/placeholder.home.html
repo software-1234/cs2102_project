@@ -20,7 +20,7 @@ tr:nth-child(even) {
 </head>
 
 	<div class="page-header">
-		{% if g.user.is_authenticated() %}
+		{% if g.user.is_authenticated %}
 		<h1>All Tasks available</h1>
 	</div>
 	<p class="form">
@@ -145,7 +145,7 @@ tr:nth-child(even) {
 			</ul>
 		</p>
 		{% endif %}
-		{% if not g.user.is_authenticated() %}
+		{% if not g.user.is_authenticated %}
 		<h1>Complete your tasks today!</h1>
 		<p>This is an app to help users hire temporary help to complete tasks.</p>
 		{% endif %}
