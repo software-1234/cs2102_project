@@ -31,7 +31,9 @@ tr:nth-child(even) {
 <p class="form">
 	<table id = "t">
 	  <tr>
-	    <th>Task</th>
+      <th>Task</th>
+      <th>Employer</th>
+      <th>Description</th>
 	    <th>Starts</th>
 	    <th>Ends</th>
 			<th>Minimum Bid</th>
@@ -42,6 +44,8 @@ tr:nth-child(even) {
           <a href="#{{task.task_id}}">
           <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#{{task.task_id}}">{{task.title}}</button>
         </td>
+        <td>{{current_user.get_user(task.employer_user_id).display_name}}</td>
+        <td>{{task.description}}</td>
 				<td>{{task.datetime_start}}</td>
 				<td>{{task.datetime_end}}</td>
 				<td>{{task.min_bid}}</td>
@@ -102,7 +106,7 @@ tr:nth-child(even) {
             <div class="modal-footer" >
               <button type="button" class="btn btn-success" data-dismiss="modal">Modify</button>
               <button type="button" class="btn btn-danger" data-dismiss="modal">Remove</button>
-              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
             </div>
           </div>
         </div>
