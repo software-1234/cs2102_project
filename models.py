@@ -3,7 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import *
 
 from werkzeug.security import generate_password_hash, check_password_hash
-from flask_login import current_user
+from flask_login import current_user, AnonymousUserMixin
 import  datetime
 
 db = SQLAlchemy(app)
@@ -55,6 +55,19 @@ class Users(db.Model):
 
     def __repr__(self):
         return "<User(user id='%s')>" % (self.user_id)
+
+class Anonymous(AnonymousUserMixin):
+    def __init__(self):
+        self.user_id = 'Guest'
+
+    def is_admin(self):
+        return False
+
+    def is_authenticated(self):
+        return False
+
+    def get_user(self, uid):
+        return Users.query.filter_by(user_id = uid).first()
 
 
 class Tasks(db.Model):

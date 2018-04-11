@@ -9,7 +9,7 @@ from forms import *
 
 from werkzeug.security import generate_password_hash, check_password_hash
 
-from flask_login import LoginManager, login_user, logout_user, current_user, login_required
+from flask_login import LoginManager, login_user, logout_user, current_user, login_required, AnonymousUserMixin
 from functools import wraps
 
 #----------------------------------------------------------------------------#
@@ -22,7 +22,7 @@ app.config.from_object('config')
 #----------------------------------------------------------------------------#
 # DB
 #----------------------------------------------------------------------------#
-from models import db, Users, Tasks, Bids, create_db, add_admin
+from models import db, Users, Tasks, Bids, create_db, add_admin, Anonymous
 
 #----------------------------------------------------------------------------#
 # Login
@@ -30,6 +30,7 @@ from models import db, Users, Tasks, Bids, create_db, add_admin
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
+login_manager.anonymous_user = Anonymous
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -130,8 +131,7 @@ def mytasks_employer():
     tasks = tasks.items
     for task in tasks:
         bids = Bids.query.filter_by(task_id=task.task_id).order_by(Bids.status.desc()).all()
-    role = "employer"
-    return render_template('pages/placeholder.mytasks.html', **locals())
+    return render_template('pages/placeholder.mytasks.employer.html', **locals())
 
 @login_required
 @app.route('/mytasks_employee')
@@ -149,8 +149,7 @@ def mytasks_employee():
     tasks = tasks.items
     for task in tasks:
         bids = Bids.query.filter_by(task_id=task.task_id).order_by(Bids.status.desc()).all()
-    role = "employee"
-    return render_template('pages/placeholder.mytasks.html', **locals())
+    return render_template('pages/placeholder.mytasks.employee.html', **locals())
 
 @login_required
 @app.route('/search', methods=["POST"])
@@ -186,7 +185,6 @@ def my_profile():
 
 @app.route('/login', methods=["GET","POST"])
 def login():
-    print Users.query.filter_by(user_id="admin").first()
     form = LoginForm(request.form)
     if (request.method == "GET"):
         return render_template('forms/login.html', form = form)

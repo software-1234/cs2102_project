@@ -43,7 +43,7 @@ tr:nth-child(even) {
 								<td>{{task.description}}</td>
 								<td>{{task.datetime_start}}</td>
 								<td>{{task.datetime_end}}</td>
-								<td>{{task.min_bid}}</td>
+								<td>${{task.min_bid}}</td>
 							</tr>
 						{% endfor %}
 			</table>
@@ -89,7 +89,7 @@ tr:nth-child(even) {
 											</tr>
 											<tr>
 												<th>Minimum bid</th>
-												<td>{{task.min_bid}}</td>
+												<td>${{task.min_bid}}</td>
 											</tr>
 											<tr>
 												<th>Last Updated Time</th>
@@ -117,7 +117,7 @@ tr:nth-child(even) {
 										</table>
 								</div>
 								<div class="modal-footer" >
-              		{% if current_user.get_id() == task.employer_user_id or current_user.is_admin%}
+              		{% if current_user.get_id() == task.employer_user_id or current_user.is_admin()%}
 										<button type="button" class="btn btn-success" data-dismiss="modal">Modify</button>
 										<button type="button" class="btn btn-danger" data-dismiss="modal">Delete</button>
                   {% else %}
@@ -144,8 +144,7 @@ tr:nth-child(even) {
 					{% endif %}
 			</ul>
 		</p>
-		{% endif %}
-		{% if not g.user.is_authenticated %}
+		{% else %}
 		<h1>Complete your tasks today!</h1>
 		<p>This is an app to help users hire temporary help to complete tasks.</p>
 		{% endif %}

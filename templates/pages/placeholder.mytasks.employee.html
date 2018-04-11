@@ -19,12 +19,7 @@ tr:nth-child(even) {
 </style>
 </head>
 <div class="page-header">
-  {% if role == "employee" %}
   <h1>My Tasks as an Employee</h1>
-  {% endif %}
-  {% if role == "employer" %}
-  <h1>My Tasks as an Employer</h1>
-  {% endif %}
 </div>
 <p class="form">
 	<table id = "t">
@@ -46,7 +41,7 @@ tr:nth-child(even) {
         <td>{{task.description}}</td>
 				<td>{{task.datetime_start}}</td>
 				<td>{{task.datetime_end}}</td>
-				<td>{{task.min_bid}}</td>
+				<td>${{task.min_bid}}</td>
       </tr>
 		{% endfor %}
 	</table>
@@ -91,8 +86,8 @@ tr:nth-child(even) {
                     <td>{{task.address}}</td>
                   </tr>
                   <tr>
-                    <th>Minimum bid</th>
-                    <td>{{task.min_bid}}</td>
+                    <th>Minimum Bid</th>
+                    <td>${{task.min_bid}}</td>
                   </tr>
                   <tr>
                     <th>Last Updated Time</th>

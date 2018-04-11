@@ -52,30 +52,28 @@
         </div>
         <div class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
-            {% if g.user.is_authenticated or current_user.is_admin == False %}
-            <li {% if request.endpoint == 'add' %} class="active" {% endif %}><a href="{{ url_for('add') }}">Add a Task</a></li>
-              <li class="dropdown">
-                <a class="dropdown-toggle" data-toggle="dropdown">My Tasks <b class="caret"></b></a>
-                <ul class="dropdown-menu">
-                  <li><a href="{{ url_for('mytasks_employer') }}">As an employer</a></li>
-                  <li><a href="{{ url_for('mytasks_employee') }}">As an employee</a></li>
-                </ul>
-                <li style="padding-top:7px">
-                  <form method="post" class="form-inline" action ="{{ url_for('search') }}">
-                      <input class="form-control" name="search" type="search" placeholder="Search" value="" aria-label="Search">
-                      <button class="btn btn-outline-success" type="submit">Search</button>
-                  </form>
-                </li>
+            {% if g.user.is_authenticated or (current_user.is_admin() == False) %}
+              <li {% if request.endpoint == 'add' %} class="active" {% endif %}><a href="{{ url_for('add') }}">Add a Task</a></li>
+                <li class="dropdown">
+                  <a class="dropdown-toggle" data-toggle="dropdown">My Tasks <b class="caret"></b></a>
+                  <ul class="dropdown-menu">
+                    <li><a href="{{ url_for('mytasks_employer') }}">As an employer</a></li>
+                    <li><a href="{{ url_for('mytasks_employee') }}">As an employee</a></li>
+                  </ul>
+                  <li style="padding-top:7px">
+                    <form method="post" class="form-inline" action ="{{ url_for('search') }}">
+                        <input class="form-control" name="search" type="search" placeholder="Search" value="" aria-label="Search">
+                        <button class="btn btn-outline-success" type="submit">Search</button>
+                    </form>
+                  </li>
             {% endif %}
           </ul>
           <ul class="nav navbar-nav pull-right">
             {% if g.user.is_authenticated %}
             </li>
-            <li {% if request.endpoint == 'my_profile' %} class="active" {% endif %}><a href="{{ url_for('my_profile') }}">My Profile</a></li>
-            <li><a href="{{ url_for('logout') }}">Logout</a></li>
-            {% endif %}
-
-            {% if not g.user.is_authenticated %}
+              <li {% if request.endpoint == 'my_profile' %} class="active" {% endif %}><a href="{{ url_for('my_profile') }}">My Profile</a></li>
+              <li><a href="{{ url_for('logout') }}">Logout</a></li>
+            {% else %}
               <li><a href="{{ url_for('register') }}">Signup</a></li>
               <li><a href="{{ url_for('login') }}">Login</a></li>
             {% endif %}
