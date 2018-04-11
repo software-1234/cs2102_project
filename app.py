@@ -52,7 +52,17 @@ def before_request():
 
 @app.route('/')
 def home():
-    tasks = Tasks.query.order_by(Tasks.last_updated.desc()).all()
+    page = request.args.get('page', 1, type=int)
+    tasks = Tasks.query.order_by(Tasks.last_updated.desc()).paginate(
+        page, 20, False
+    )
+    next_url = None
+    if tasks.has_next:
+        next_url = url_for('home', page=tasks.next_num) 
+    prev_url = None
+    if tasks.has_prev:
+        prev_url = url_for('home', page=tasks.prev_num)
+    tasks = tasks.items
     return render_template('pages/placeholder.home.html', **locals())
 
 
@@ -79,14 +89,34 @@ def add():
 @login_required
 @app.route('/mytasks_employer')
 def mytasks_employer():
-    tasks = Tasks.query.filter_by(employer_user_id=current_user.get_id()).order_by(Tasks.last_updated.desc()).all()
+    page = request.args.get('page', 1, type=int)
+    tasks = Tasks.query.filter_by(employer_user_id=current_user.get_id()).order_by(Tasks.last_updated.desc()).paginate(
+        page, 20, False
+    )
+    next_url = None
+    if tasks.has_next:
+        next_url = url_for('mytasks_employer', page=tasks.next_num) 
+    prev_url = None
+    if tasks.has_prev:
+        prev_url = url_for('mytasks_employer', page=tasks.prev_num)
+    tasks = tasks.items
     role = "employer"
     return render_template('pages/placeholder.mytasks.html', **locals())
 
 @login_required
 @app.route('/mytasks_employee')
 def mytasks_employee():
-    tasks = Tasks.query.filter_by(employee_user_id=current_user.get_id()).order_by(Tasks.last_updated.desc()).all()
+    page = request.args.get('page', 1, type=int)
+    tasks = Tasks.query.filter_by(employee_user_id=current_user.get_id()).order_by(Tasks.last_updated.desc()).paginate(
+        page, 20, False
+    )
+    next_url = None
+    if tasks.has_next:
+        next_url = url_for('mytasks_employee', page=tasks.next_num) 
+    prev_url = None
+    if tasks.has_prev:
+        prev_url = url_for('mytasks_employee', page=tasks.prev_num)
+    tasks = tasks.items
     role = "employee"
     return render_template('pages/placeholder.mytasks.html', **locals())
 
