@@ -63,6 +63,8 @@ def home():
     if tasks.has_prev:
         prev_url = url_for('home', page=tasks.prev_num)
     tasks = tasks.items
+    for task in tasks:
+        bids = Bids.query.filter_by(task_id=task.task_id).order_by(Bids.status.desc()).all()
     return render_template('pages/placeholder.home.html', **locals())
 
 
@@ -100,6 +102,8 @@ def mytasks_employer():
     if tasks.has_prev:
         prev_url = url_for('mytasks_employer', page=tasks.prev_num)
     tasks = tasks.items
+    for task in tasks:
+        bids = Bids.query.filter_by(task_id=task.task_id).order_by(Bids.status.desc()).all()
     role = "employer"
     return render_template('pages/placeholder.mytasks.html', **locals())
 
@@ -117,6 +121,8 @@ def mytasks_employee():
     if tasks.has_prev:
         prev_url = url_for('mytasks_employee', page=tasks.prev_num)
     tasks = tasks.items
+    for task in tasks:
+        bids = Bids.query.filter_by(task_id=task.task_id).order_by(Bids.status.desc()).all()
     role = "employee"
     return render_template('pages/placeholder.mytasks.html', **locals())
 
@@ -139,6 +145,8 @@ def search():
         if tasks.has_prev:
             prev_url = url_for('search', page=tasks.prev_num)
         tasks = tasks.items
+        for task in tasks:
+            bids = Bids.query.filter_by(task_id=task.task_id).order_by(Bids.status.desc()).all()
         role = "employee"
         return render_template('pages/placeholder.search.html', **locals())
 
