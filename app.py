@@ -63,8 +63,7 @@ def home():
     if tasks.has_prev:
         prev_url = url_for('home', page=tasks.prev_num)
     tasks = tasks.items
-    for task in tasks:
-        bids = Bids.query.filter_by(task_id=task.task_id).order_by(Bids.status.desc()).all()
+    bids = Bids.query.all()
     return render_template('pages/placeholder.home.html', **locals())
 
 @app.route('/about')

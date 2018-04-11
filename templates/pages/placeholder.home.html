@@ -106,13 +106,15 @@ tr:nth-child(even) {
 												<th>Comment</th>
 												<th>Status</th>
 											</tr>
-											{% for bid in task.bids %}
-												<tr>
-													<td>{{current_user.get_user(bid.user_id).display_name}}</td>
-													<td>{{bid.bid_amount}}</td>
-													<td>{{bid.comment}}</td>
-													<td>{{bid.status}}</td>
-												</tr>
+											{% for bid in bids %}
+                        {% if bid.task_id == task.task_id %}
+  												<tr>
+  													<td>{{current_user.get_user(bid.user_id).display_name}}</td>
+  													<td>{{bid.bid_amount}}</td>
+  													<td>{{bid.comment}}</td>
+  													<td>{{bid.status}}</td>
+  												</tr>
+                        {% endif %}
 											{% endfor %}
 										</table>
 								</div>
