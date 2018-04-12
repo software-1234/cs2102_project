@@ -54,7 +54,7 @@ def before_request():
 @app.route('/')
 def home():
     page = request.args.get('page', 1, type=int)
-    tasks = Tasks.query.order_by(Tasks.last_updated.desc()).paginate(
+    tasks = Tasks.query.filter_by(employee_user_id=None).order_by(Tasks.last_updated.desc()).paginate(
         page, 20, False
     )
     next_url = None
@@ -224,7 +224,7 @@ def search():
     if(request.method == "POST"):
         search = request.form['search']
         page = request.args.get('page', 1, type=int)
-        tasks = Tasks.query.filter(Tasks.title.ilike('%'+search+'%') | Tasks.description.ilike('%'+search+'%') |
+        tasks = Tasks.query.filter_by(employee_user_id=None).filter(Tasks.title.ilike('%'+search+'%') | Tasks.description.ilike('%'+search+'%') |
                 Tasks.address.ilike('%'+search+'%') | Tasks.employer_user_id.ilike('%'+search+'%')).order_by(Tasks.last_updated.desc()).paginate(
             page, 20, False
         )
