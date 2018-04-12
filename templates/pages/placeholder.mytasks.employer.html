@@ -115,7 +115,13 @@ tr:nth-child(even) {
                           <td>${{bid.bid_amount}}</td>
                           <td>{{bid.comment}}</td>
                           <td>{{bid.status}}</td>
-                          <td><button type="button" class="btn btn-primary btn-sm">Pick</button></td>
+                          <td>
+                            <a href="{{url_for('pick_bid', bid_id=bid.bid_id )}}">
+                              <button type="button" class="btn btn-primary btn-sm" id="pick">
+                                <span aria-hidden="true"></span>Pick Me!
+                              </button>
+                            </a>
+                          </td>
                         </tr>
                       {% endif %}
                     {% endfor %}

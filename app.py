@@ -12,6 +12,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import LoginManager, login_user, logout_user, current_user, login_required, AnonymousUserMixin
 from functools import wraps
 
+from sqlalchemy import and_
 #----------------------------------------------------------------------------#
 # App Config.
 #----------------------------------------------------------------------------#
@@ -164,6 +165,20 @@ def update_bid(bid_id):
     else:
         return render_template('pages/placeholder.update.bid.html', **locals())
 
+
+@login_required
+@app.route('/<int:bid_id>/pick_bid/bid', methods=["GET","POST"])
+def pick_bid(bid_id):
+    if (request.method == "POST"):
+        accepted_bid = Bids.query.filter_by(bid_id = bid_id).first()
+        Bids.query.filter_by(task_id = accepted_bid.task_id).update({'status':'Rejected'})
+        Bids.query.filter_by(bid_id = bid_id).update({'status':'Accepted'})
+        Tasks.query.filter_by(task_id = accepted_bid.task_id).update({'employee_user_id':accepted_bid.user_id})
+        db.session.commit()
+        flash('Bid successfully picked!')
+        return redirect(url_for('home'))
+    else:
+        return render_template('pages/placeholder.pick.bid.html')
 
 @login_required
 @app.route('/mytasks_employer')

@@ -1,0 +1,15 @@
+{% extends "layouts/main.html" %}
+{% block content %}
+<h2> Are you sure you want to pick it? </h2>
+
+<form action="#" method = 'post'>
+	<button type="submit" class="btn btn-primary" id="submit" type="submit">
+		<span aria-hidden="true"></span>Pick
+	</button>
+</form>
+<a href = '{{url_for('home')}}'>
+	<button class="btn btn-default delete">
+		<span aria-hidden="true"></span>Cancel
+	</button>
+</a>
+{% endblock %}
