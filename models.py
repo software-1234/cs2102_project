@@ -1,6 +1,7 @@
 from __main__ import app
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import *
+import enum
 from sqlalchemy.orm import column_property
 
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -105,7 +106,7 @@ class Bids(db.Model):
     user_id = Column('user_id', String, ForeignKey("users.user_id"), primary_key=True, nullable=False)
     last_updated = Column('last_updated', DateTime, default=datetime.datetime.now , onupdate=datetime.datetime.now)
     bid_amount = Column('bid_amount', Numeric, default=0.00)
-    status = Column('status', BOOLEAN, default=False)
+    status = Column('status', db.Enum('Pending', 'Accepted', 'Rejected', name = 'status'), default='Pending')
     comment = Column('comment', String)
     UniqueConstraint('task_id', 'user_id')
 
