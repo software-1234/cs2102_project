@@ -23,7 +23,7 @@ app.config.from_object('config')
 #----------------------------------------------------------------------------#
 # DB
 #----------------------------------------------------------------------------#
-from models import db, Users, Tasks, Bids, create_db, add_admin, Anonymous
+from models import db, Users, Tasks, Bids, create_db, add_admin, Anonymous, add_test_data
 
 #----------------------------------------------------------------------------#
 # Login
@@ -327,6 +327,7 @@ if not app.debug:
 if __name__ == '__main__':
     create_db(drop_all=False)
     add_admin()
+    #add_test_data()
     app.run()
 
 

@@ -130,3 +130,19 @@ def add_admin():
         admin_user.admin = True
         db.session.add(admin_user)
         db.session.commit()
+
+def add_test_data():
+    users = []
+    users.append(Users("user1","user1", "Fictitious Street 1", "98765432", "John Doe1"))
+    users.append(Users("user2","user2", "Fictitious Street 2", "98765432", "John Doe2"))
+    users.append(Users("user3","user3", "Fictitious Street 3", "98765432", "John Doe3"))
+    users.append(Users("user4","user4", "Fictitious Street 4", "98765432", "John Doe4"))
+    users.append(Users("user5","user5", "Fictitious Street 5", "98765432", "John Doe5"))
+    users.append(Users("user6","user6", "Fictitious Street 6", "98765432", "John Doe6"))
+    users.append(Users("user7","user7", "Fictitious Street 7", "98765432", "John Doe7"))
+    users.append(Users("user8","user8", "Fictitious Street 8", "98765432", "John Doe8"))
+    users.append(Users("user9","user9", "Fictitious Street 9", "98765432", "John Doe9"))
+    users.append(Users("user10","user10", "Fictitious Street 10", "98765432", "John Doe10"))
+    for user in users:
+        db.session.add(user)
+        db.session.commit()
