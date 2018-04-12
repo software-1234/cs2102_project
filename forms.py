@@ -57,9 +57,6 @@ class AddForm(Form):
     min_bid = DecimalField(
         'Minimun Bid', validators=[DataRequired()]
     )
-    datetime_expire = DateTimeField(
-        'EX) 2018-04-28 00:00:00' , validators=[DataRequired()], default=datetime.datetime.today
-    )
 
 class BidForm(Form):
     bid_amount = DecimalField(

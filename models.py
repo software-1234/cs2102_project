@@ -83,10 +83,9 @@ class Tasks(db.Model):
     title = Column('title', String)
     description = Column('description', String)
     min_bid = Column('min_bid', Numeric)
-    datetime_expire = Column('datetime_expire', DateTime)
     last_updated = Column('last_updated', DateTime, default=datetime.datetime.now , onupdate=datetime.datetime.now)
 
-    def __init__(self, ds, de, a, t, d, m, dex):
+    def __init__(self, ds, de, a, t, d, m):
         self.employer_user_id = current_user.get_id()
         self.datetime_start = ds
         self.datetime_end = de
@@ -94,7 +93,6 @@ class Tasks(db.Model):
         self.title = t
         self.description = d
         self.min_bid = m
-        self.datetime_expire = dex
 
     def __repr__(self):
         return "<Tasks(task_id='%s')>" % (self.task_id)
@@ -106,7 +104,7 @@ class Bids(db.Model):
     user_id = Column('user_id', String, ForeignKey("users.user_id"), primary_key=True, nullable=False)
     last_updated = Column('last_updated', DateTime, default=datetime.datetime.now , onupdate=datetime.datetime.now)
     bid_amount = Column('bid_amount', Numeric, default=0.00)
-    status = Column('status', db.Enum('Pending', 'Accepted', 'Rejected', name = 'status'), default='Pending')
+    status = Column('status', db.Enum('Pending','Accepted', 'Rejected', name = 'status'), default='Pending')
     comment = Column('comment', String)
     UniqueConstraint('task_id', 'user_id')
 

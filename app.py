@@ -83,7 +83,7 @@ def add_task():
             print(form.errors)
             flash('Task info is invalid. Try again')
             return render_template('pages/placeholder.add.task.html', form=form)
-        task = Tasks(form.datetime_start.data, form.datetime_end.data, form.address.data, form.title.data, form.description.data, form.min_bid.data, form.datetime_expire.data)
+        task = Tasks(form.datetime_start.data, form.datetime_end.data, form.address.data, form.title.data, form.description.data, form.min_bid.data)
         db.session.add(task)
         db.session.commit()
         flash('A task successfully added')
@@ -110,7 +110,7 @@ def modify_task(tid):
         if not (form.validate_on_submit()):
             flash('Task info is invalid. Try again')
             return render_template('pages/placeholder.modify.task.html', form=form, task=task)
-        Tasks.query.filter_by(task_id = tid).update({'title':form.title.data, 'description':form.description.data, 'datetime_start':form.datetime_start.data, 'datetime_end':form.datetime_end.data, 'address':form.address.data, 'min_bid':form.min_bid.data, 'datetime_expire':form.datetime_expire.data})
+        Tasks.query.filter_by(task_id = tid).update({'title':form.title.data, 'description':form.description.data, 'datetime_start':form.datetime_start.data, 'datetime_end':form.datetime_end.data, 'address':form.address.data, 'min_bid':form.min_bid.data})
         db.session.commit()
         flash('A task successfully modified')
         return redirect(request.args.get('next') or url_for('home'))
