@@ -37,6 +37,7 @@ login_manager.anonymous_user = Anonymous
 def load_user(user_id):
     return Users.query.get(user_id)
 
+
 # Automatically tear down SQLAlchemy.
 '''
 @app.teardown_request

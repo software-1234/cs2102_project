@@ -16,6 +16,10 @@ td, th {
 tr[bid_done = "True"] {
     background-color: #969696;
 }
+tr[itsyou = "True"] {
+    border: 0.5px solid #dddddd;
+    text-decoration: underline;
+}
 </style>
 </head>
 <div class="page-header">
@@ -118,7 +122,7 @@ tr[bid_done = "True"] {
                   </tr>
                   {% for bid2 in bids %}
                     {% if bid2.task_id == task2.task_id %}
-                      <tr>
+                      <tr itsyou = "{{bid2.user_id == current_user.get_id()}}">
                         <td>{{current_user.get_user(bid2.user_id).display_name}}</td>
                         <td>${{bid2.bid_amount}}</td>
                         <td>{{bid2.comment}}</td>
