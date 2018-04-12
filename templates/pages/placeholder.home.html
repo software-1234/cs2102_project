@@ -29,6 +29,7 @@ tr:nth-child(even) {
 							<th>Task</th>
 							<th>Employer</th>
 							<th>Description</th>
+							<th>Location</th>
 							<th>Starts</th>
 							<th>Ends</th>
 							<th>Minimum Bid</th>
@@ -41,8 +42,9 @@ tr:nth-child(even) {
 								</td>
 								<td>{{current_user.get_user(task.employer_user_id).display_name}}</td>
 								<td>{{task.description}}</td>
-								<td>{{task.datetime_start}}</td>
-								<td>{{task.datetime_end}}</td>
+								<td>{{task.address}}</td>
+								<td>{{task.datetime_start.strftime('%A, %d %B %y @ %I:%M%p') }}</td>
+								<td>{{ task.datetime_end.strftime('%A, %d %B %y @ %I:%M%p') }}</td>
 								<td>${{task.min_bid}}</td>
 							</tr>
 						{% endfor %}
