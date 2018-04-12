@@ -66,7 +66,7 @@ def home():
     tasks = tasks.items
     bids = []
     for task in tasks:
-        bids.extend(Bids.query.filter_by(task_id=task.task_id).order_by(Bids.status.desc()).all())
+        bids.extend(Bids.query.filter_by(task_id=task.task_id).order_by(Bids.status.desc(),Bids.bid_amount.desc()).all())
     return render_template('pages/placeholder.home.html', **locals())
 
 @app.route('/about')
@@ -196,7 +196,7 @@ def mytasks_employer():
     tasks = tasks.items
     bids = []
     for task in tasks:
-        bids.extend(Bids.query.filter_by(task_id=task.task_id).order_by(Bids.status.desc()).all())
+        bids.extend(Bids.query.filter_by(task_id=task.task_id).order_by(Bids.status.desc(),Bids.bid_amount.desc()).all())
     return render_template('pages/placeholder.mytasks.employer.html', **locals())
 
 @login_required
@@ -215,7 +215,7 @@ def mytasks_employee():
     tasks = tasks.items
     bids = []
     for task in tasks:
-        bids.extend(Bids.query.filter_by(task_id=task.task_id).order_by(Bids.status.desc()).all())
+        bids.extend(Bids.query.filter_by(task_id=task.task_id).order_by(Bids.status.desc(),Bids.bid_amount.desc()).all())
     return render_template('pages/placeholder.mytasks.employee.html', **locals())
 
 @login_required
@@ -237,7 +237,7 @@ def search():
         tasks = tasks.items
         bids = []
         for task in tasks:
-            bids.extend(Bids.query.filter_by(task_id=task.task_id).order_by(Bids.status.desc()).all())
+            bids.extend(Bids.query.filter_by(task_id=task.task_id).order_by(Bids.status.desc(),Bids.bid_amount.desc()).all())
         return render_template('pages/placeholder.search.html', **locals())
 
 

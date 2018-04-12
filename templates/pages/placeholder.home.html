@@ -20,7 +20,7 @@ tr:nth-child(even) {
 </head>
 
 	<div class="page-header">
-		{% if g.user.is_authenticated %}
+		{% if g.user.is_authenticated() %}
 		<h1>All Tasks available</h1>
 	</div>
 	<p class="form">
@@ -160,12 +160,12 @@ tr:nth-child(even) {
                   {% else %}
                     {% if task.employee_user_id %}
                           <button type="button" class="btn btn-primary disabled" id="bid">
-                            <span aria-hidden="true"></span>Bid!
+                            <span aria-hidden="true"></span>Bid
                         </a>
                     {% else %}
                       <a href="{{url_for('add_bid', tid=task.task_id )}}">
                         <button type="button" class="btn btn-primary" id="bid">
-                          <span aria-hidden="true"></span>Bid!
+                          <span aria-hidden="true"></span>Bid
                         </button>
                       </a>
                     {% endif %}
@@ -191,11 +191,12 @@ tr:nth-child(even) {
 					{% endif %}
 			</ul>
 		</p>
-		{% else %}
+		{% endif %}
+		{% if not g.user.is_authenticated() %}
 		<h1>Complete your tasks today!</h1>
 		<p>This is an app to help users hire temporary help to complete tasks.</p>
 		{% endif %}
 
-	</div>
+		</div>
 
 {% endblock %}
