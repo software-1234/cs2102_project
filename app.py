@@ -54,7 +54,7 @@ def before_request():
 @app.route('/')
 def home():
     page = request.args.get('page', 1, type=int)
-    tasks = Tasks.query.order_by(Tasks.last_updated.desc()).paginate(
+    tasks = Tasks.query.filter_by(employee_user_id=None).order_by(Tasks.last_updated.desc()).paginate(
         page, 20, False
     )
     next_url = None
@@ -66,7 +66,7 @@ def home():
     tasks = tasks.items
     bids = []
     for task in tasks:
-        bids.extend(Bids.query.filter_by(task_id=task.task_id).order_by(Bids.status.desc()).all())
+        bids.extend(Bids.query.filter_by(task_id=task.task_id).order_by(Bids.status.desc(),Bids.bid_amount.desc()).all())
     return render_template('pages/placeholder.home.html', **locals())
 
 @app.route('/about')
@@ -196,7 +196,7 @@ def mytasks_employer():
     tasks = tasks.items
     bids = []
     for task in tasks:
-        bids.extend(Bids.query.filter_by(task_id=task.task_id).order_by(Bids.status.desc()).all())
+        bids.extend(Bids.query.filter_by(task_id=task.task_id).order_by(Bids.status.desc(),Bids.bid_amount.desc()).all())
     return render_template('pages/placeholder.mytasks.employer.html', **locals())
 
 @login_required
@@ -215,7 +215,7 @@ def mytasks_employee():
     tasks = tasks.items
     bids = []
     for task in tasks:
-        bids.extend(Bids.query.filter_by(task_id=task.task_id).order_by(Bids.status.desc()).all())
+        bids.extend(Bids.query.filter_by(task_id=task.task_id).order_by(Bids.status.desc(),Bids.bid_amount.desc()).all())
     return render_template('pages/placeholder.mytasks.employee.html', **locals())
 
 @login_required
@@ -224,10 +224,8 @@ def search():
     if(request.method == "POST"):
         search = request.form['search']
         page = request.args.get('page', 1, type=int)
-        t1 = Tasks.query.filter(Tasks.title.ilike('%'+search+'%'))
-        t2 = Tasks.query.filter(Tasks.description.ilike('%'+search+'%'))
-        t3 = Tasks.query.filter(Tasks.address.ilike('%'+search+'%'))
-        tasks = t1.union(t2).union(t3).order_by(Tasks.last_updated.desc()).paginate(
+        tasks = Tasks.query.filter_by(employee_user_id=None).filter(Tasks.title.ilike('%'+search+'%') | Tasks.description.ilike('%'+search+'%') |
+                Tasks.address.ilike('%'+search+'%') | Tasks.employer_user_id.ilike('%'+search+'%')).order_by(Tasks.last_updated.desc()).paginate(
             page, 20, False
         )
         next_url = None
@@ -239,7 +237,7 @@ def search():
         tasks = tasks.items
         bids = []
         for task in tasks:
-            bids.extend(Bids.query.filter_by(task_id=task.task_id).order_by(Bids.status.desc()).all())
+            bids.extend(Bids.query.filter_by(task_id=task.task_id).order_by(Bids.status.desc(),Bids.bid_amount.desc()).all())
         return render_template('pages/placeholder.search.html', **locals())
 
 

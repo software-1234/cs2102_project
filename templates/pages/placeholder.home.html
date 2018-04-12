@@ -13,14 +13,12 @@ td, th {
     text-align: left;
     padding: 8px;
 }
-tr:nth-child(even) {
-    background-color: #dddddd;
-}
+
 </style>
 </head>
 
 	<div class="page-header">
-		{% if g.user.is_authenticated %}
+		{% if g.user.is_authenticated() %}
 		<h1>All Tasks available</h1>
 	</div>
 	<p class="form">
@@ -34,17 +32,19 @@ tr:nth-child(even) {
 							<th>Minimum Bid</th>
 						</tr>
 						{% for task in tasks %}
-							<tr>
-								<td>
-									<a href="#{{task.task_id}}">
-									<button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#{{task.task_id}}">{{task.title}}</button>
-								</td>
-								<td>{{current_user.get_user(task.employer_user_id).display_name}}</td>
-								<td>{{task.description}}</td>
-								<td>{{task.datetime_start}}</td>
-								<td>{{task.datetime_end}}</td>
-								<td>${{task.min_bid}}</td>
-							</tr>
+              {% if not task.employee_user_id %}
+  							<tr>
+  								<td>
+  									<a href="#{{task.task_id}}">
+  									<button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#{{task.task_id}}">{{task.title}}</button>
+  								</td>
+  								<td>{{current_user.get_user(task.employer_user_id).display_name}}</td>
+  								<td>{{task.description}}</td>
+  								<td>{{task.datetime_start}}</td>
+  								<td>{{task.datetime_end}}</td>
+  								<td>${{task.min_bid}}</td>
+  							</tr>
+              {% endif %}
 						{% endfor %}
 			</table>
 			{% for task in tasks %}

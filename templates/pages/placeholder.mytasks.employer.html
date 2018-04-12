@@ -13,8 +13,9 @@ td, th {
     text-align: left;
     padding: 8px;
 }
-tr:nth-child(even) {
-    background-color: #dddddd;
+
+tr[bid_done = "True"] {
+    background-color: #969696;
 }
 </style>
 </head>
@@ -33,7 +34,7 @@ tr:nth-child(even) {
       <th>Employee</th>
 	  </tr>
 		{% for task in tasks %}
-			<tr>
+			<tr bid_done = "{{task.employee_user_id != None}}">
 				<td>
           <a href="#{{task.task_id}}">
           <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#{{task.task_id}}">{{task.title}}</button>

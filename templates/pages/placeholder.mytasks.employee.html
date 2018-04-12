@@ -13,8 +13,8 @@ td, th {
     text-align: left;
     padding: 8px;
 }
-tr:nth-child(even) {
-    background-color: #dddddd;
+tr[bid_done = "True"] {
+    background-color: #969696;
 }
 </style>
 </head>
@@ -34,7 +34,7 @@ tr:nth-child(even) {
 	  </tr>
 		{% for bid in bids %}
       {% if bid.user_id == current_user.get_id() %}
-  			<tr>
+  			<tr bid_done = "{{bid.status == "Accepted" or bid.status == "Rejected"}}">
           {% for task in tasks %}
             {% if bid.task_id == task.task_id %}
       				<td>
