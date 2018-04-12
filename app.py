@@ -209,10 +209,8 @@ def search():
     if(request.method == "POST"):
         search = request.form['search']
         page = request.args.get('page', 1, type=int)
-        t1 = Tasks.query.filter(Tasks.title.ilike('%'+search+'%'))
-        t2 = Tasks.query.filter(Tasks.description.ilike('%'+search+'%'))
-        t3 = Tasks.query.filter(Tasks.address.ilike('%'+search+'%'))
-        tasks = t1.union(t2).union(t3).order_by(Tasks.last_updated.desc()).paginate(
+        tasks = Tasks.query.filter(Tasks.title.ilike('%'+search+'%') | Tasks.description.ilike('%'+search+'%') |
+                Tasks.address.ilike('%'+search+'%') | Tasks.employer_user_id.ilike('%'+search+'%')).order_by(Tasks.last_updated.desc()).paginate(
             page, 20, False
         )
         next_url = None
