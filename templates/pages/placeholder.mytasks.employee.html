@@ -19,7 +19,7 @@ tr[bid_done = "True"] {
 </style>
 </head>
 <div class="page-header">
-  <h1>My Tasks as an Employee/a Bider</h1>
+  <h1>My Bids</h1>
 </div>
 <p class="form">
 	<table id = "t">
@@ -27,6 +27,7 @@ tr[bid_done = "True"] {
       <th>Task</th>
       <th>Employer</th>
       <th>Description</th>
+      <th>Location</th>
 	    <th>Starts</th>
 	    <th>Ends</th>
 			<th>My Bid</th>
@@ -43,8 +44,9 @@ tr[bid_done = "True"] {
               </td>
               <td>{{current_user.get_user(task.employer_user_id).display_name}}</td>
               <td>{{task.description}}</td>
-      				<td>{{task.datetime_start}}</td>
-      				<td>{{task.datetime_end}}</td>
+              <td>{{task.address}}</td>
+              <td>{{task.datetime_start.strftime('%A, %d %B %y @ %I:%M%p') }}</td>
+              <td>{{ task.datetime_end.strftime('%A, %d %B %y @ %I:%M%p') }}</td>
             {% endif %}
           {% endfor %}
   				<td>${{bid.bid_amount}}</td>

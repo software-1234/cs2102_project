@@ -27,21 +27,23 @@ td, th {
 							<th>Task</th>
 							<th>Employer</th>
 							<th>Description</th>
+							<th>Location</th>
 							<th>Starts</th>
 							<th>Ends</th>
 							<th>Minimum Bid</th>
 						</tr>
 						{% for task in tasks %}
               {% if not task.employee_user_id %}
-  							<tr>
+                <tr>
   								<td>
   									<a href="#{{task.task_id}}">
   									<button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#{{task.task_id}}">{{task.title}}</button>
   								</td>
   								<td>{{current_user.get_user(task.employer_user_id).display_name}}</td>
   								<td>{{task.description}}</td>
-  								<td>{{task.datetime_start}}</td>
-  								<td>{{task.datetime_end}}</td>
+  								<td>{{task.address}}</td>
+  								<td>{{task.datetime_start.strftime('%A, %d %B %y @ %I:%M%p') }}</td>
+  								<td>{{ task.datetime_end.strftime('%A, %d %B %y @ %I:%M%p') }}</td>
   								<td>${{task.min_bid}}</td>
   							</tr>
               {% endif %}
@@ -160,12 +162,12 @@ td, th {
                   {% else %}
                     {% if task.employee_user_id %}
                           <button type="button" class="btn btn-primary disabled" id="bid">
-                            <span aria-hidden="true"></span>Bid!
+                            <span aria-hidden="true"></span>Bid
                         </a>
                     {% else %}
                       <a href="{{url_for('add_bid', tid=task.task_id )}}">
                         <button type="button" class="btn btn-primary" id="bid">
-                          <span aria-hidden="true"></span>Bid!
+                          <span aria-hidden="true"></span>Bid
                         </button>
                       </a>
                     {% endif %}
@@ -191,11 +193,12 @@ td, th {
 					{% endif %}
 			</ul>
 		</p>
-		{% else %}
+		{% endif %}
+		{% if not g.user.is_authenticated() %}
 		<h1>Complete your tasks today!</h1>
 		<p>This is an app to help users hire temporary help to complete tasks.</p>
 		{% endif %}
 
-	</div>
+		</div>
 
 {% endblock %}

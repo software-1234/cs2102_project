@@ -17,6 +17,7 @@ td, th {
 tr[bid_done = "True"] {
     background-color: #969696;
 }
+
 </style>
 </head>
 <div class="page-header">
@@ -26,8 +27,8 @@ tr[bid_done = "True"] {
 	<table id = "t">
 	  <tr>
       <th>Task</th>
-      <th>Employer</th>
       <th>Description</th>
+      <th>Location</th>
 	    <th>Starts</th>
 	    <th>Ends</th>
 			<th>Minimum Bid</th>
@@ -39,15 +40,15 @@ tr[bid_done = "True"] {
           <a href="#{{task.task_id}}">
           <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#{{task.task_id}}">{{task.title}}</button>
         </td>
-        <td>{{current_user.get_user(task.employer_user_id).display_name}}</td>
         <td>{{task.description}}</td>
-				<td>{{task.datetime_start}}</td>
-				<td>{{task.datetime_end}}</td>
+        <td>{{task.address}}</td>
+        <td>{{task.datetime_start.strftime('%A, %d %B %y @ %I:%M%p') }}</td>
+        <td>{{ task.datetime_end.strftime('%A, %d %B %y @ %I:%M%p') }}</td>
 				<td>${{task.min_bid}}</td>
         {% if task.employee_user_id %}
           <td>{{current_user.get_user(task.employee_user_id).display_name}}</td>
         {% else %}
-          <td></td>
+          <td>-</td>
         {% endif %}
       </tr>
 		{% endfor %}
