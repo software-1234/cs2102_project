@@ -1,3 +1,5 @@
+https://github.com/software-1234/cs2102_project
+
 ### Quick Start
 
 1. Initialize and activate a virtualenv:
