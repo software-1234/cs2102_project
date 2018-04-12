@@ -127,16 +127,25 @@ tr:nth-child(even) {
                 </table>
             </div>
             <div class="modal-footer" >
-              <a href="{{url_for('update_bid', bid_id=bid.bid_id )}}">
-                <button type="button" class="btn btn-success" id="update bid">
+              {% if bid.status == "Pending" %}
+                <a href="{{url_for('update_bid', bid_id=bid.bid_id )}}">
+                  <button type="button" class="btn btn-success" id="update bid">
+                    <span aria-hidden="true"></span>Update my bid
+                  </button>
+                </a>
+                <a href="{{url_for('delete_bid', bid_id=bid.bid_id )}}">
+                  <button type="button" class="btn btn-danger" id="delete bid">
+                    <span aria-hidden="true"></span>Delete my bid
+                  </button>
+                </a>
+              {% else %}
+                <button type="button" class="btn btn-success disabled" id="update bid">
                   <span aria-hidden="true"></span>Update my bid
                 </button>
-              </a>
-              <a href="{{url_for('delete_bid', bid_id=bid.bid_id )}}">
-                <button type="button" class="btn btn-danger" id="delete bid">
+                <button type="button" class="btn btn-danger disabled" id="delete bid">
                   <span aria-hidden="true"></span>Delete my bid
                 </button>
-              </a>
+              {% endif %}
               <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
             </div>
       </div>
